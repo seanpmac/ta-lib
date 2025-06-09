@@ -184,6 +184,10 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+#ifdef USE_NPP
+   return TA_CEIL_NPP(startIdx, endIdx, inReal, outBegIdx, outNBElement, outReal);
+#endif
+
 
    for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
    {
@@ -257,6 +261,11 @@ double outReal[],
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
+/* Generated */    #ifdef USE_NPP
+   return TA_S_CEIL_NPP(startIdx, endIdx, inReal, outBegIdx, outNBElement, outReal);
+#endif
+
+
 /* Generated */    for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
 /* Generated */    {
 /* Generated */       outReal[outIdx] = std_ceil(inReal[i]);

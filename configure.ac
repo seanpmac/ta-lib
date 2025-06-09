@@ -14,6 +14,21 @@ AM_PROG_AR
 AC_PROG_CC
 LT_INIT
 
+# Option to enable NVIDIA Performance Primitives
+AC_ARG_ENABLE([npp],
+    AS_HELP_STRING([--enable-npp], [Enable NVIDIA Performance Primitives]),
+    [use_npp=$enableval], [use_npp=no])
+AM_CONDITIONAL([USE_NPP], [test "x$use_npp" = "xyes"])
+if test "x$use_npp" = "xyes"; then
+    AC_DEFINE([USE_NPP], [1], [Define to 1 to enable NPP acceleration])
+    AC_CHECK_LIB([npps], [nppsAdd_64f],
+        [NPP_LIBS="-lnpps -lnppc"],
+        [AC_MSG_ERROR([npps library not found])])
+else
+    NPP_LIBS=""
+fi
+AC_SUBST([NPP_LIBS])
+
 # Autoupdate added the next two lines to ensure that your configure
 # script's behavior did not change.  They are probably safe to remove.
 AC_CHECK_INCLUDES_DEFAULT

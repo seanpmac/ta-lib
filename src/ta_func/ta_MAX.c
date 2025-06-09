@@ -215,6 +215,10 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+#ifdef USE_NPP
+   return TA_MAX_NPP(startIdx, endIdx, inReal, optInTimePeriod,
+                     outBegIdx, outNBElement, outReal);
+#endif
 
    /* Identify the minimum number of price bar needed
     * to identify at least one output over the specified
@@ -332,6 +336,10 @@ double outReal[],
 /* Generated */                      double        outReal[] )
 /* Generated */ #endif
 /* Generated */ {
+#ifdef USE_NPP
+   return TA_S_MAX_NPP(startIdx, endIdx, inReal, optInTimePeriod,
+                       outBegIdx, outNBElement, outReal);
+#endif
 /* Generated */    double highest, tmp;
 /* Generated */    int outIdx, nbInitialElementNeeded;
 /* Generated */    int trailingIdx, today, i, highestIdx;

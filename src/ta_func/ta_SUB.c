@@ -190,6 +190,10 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+#ifdef USE_NPP
+   return TA_SUB_NPP(startIdx, endIdx, inReal0, inReal1,
+                     outBegIdx, outNBElement, outReal);
+#endif
 
    /* Default return values */
    for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
@@ -269,6 +273,10 @@ double outReal[],
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
+#ifdef USE_NPP
+   return TA_S_SUB_NPP(startIdx, endIdx, inReal0, inReal1,
+                       outBegIdx, outNBElement, outReal);
+#endif
 /* Generated */    for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
 /* Generated */    {
 /* Generated */       outReal[outIdx] = inReal0[i]-inReal1[i];

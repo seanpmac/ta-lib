@@ -184,6 +184,10 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+#ifdef USE_NPP
+   return TA_ATAN_NPP(startIdx, endIdx, inReal, outBegIdx, outNBElement, outReal);
+#endif
+
 
    /* Default return values */
    for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
@@ -258,6 +262,11 @@ double outReal[],
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
+/* Generated */    #ifdef USE_NPP
+   return TA_S_ATAN_NPP(startIdx, endIdx, inReal, outBegIdx, outNBElement, outReal);
+#endif
+
+
 /* Generated */    for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
 /* Generated */    {
 /* Generated */       outReal[outIdx] = std_atan(inReal[i]);

@@ -215,6 +215,11 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+#ifdef USE_NPP
+   return TA_LINEARREG_SLOPE_NPP(startIdx, endIdx, inReal,
+                                 optInTimePeriod, outBegIdx,
+                                 outNBElement, outReal);
+#endif
 
    /* Linear Regression is a concept also known as the
     * "least squares method" or "best fit." Linear
@@ -320,6 +325,11 @@ double outReal[],
 /* Generated */                                  double        outReal[] )
 /* Generated */ #endif
 /* Generated */ {
+#ifdef USE_NPP
+   return TA_S_LINEARREG_SLOPE_NPP(startIdx, endIdx, inReal,
+                                   optInTimePeriod, outBegIdx,
+                                   outNBElement, outReal);
+#endif
 /* Generated */    int outIdx;
 /* Generated */    int today, lookbackTotal;
 /* Generated */    double SumX, SumXY, SumY, SumXSqr, Divisor;

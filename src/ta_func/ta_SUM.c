@@ -209,6 +209,10 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+#ifdef USE_NPP
+   return TA_SUM_NPP(startIdx, endIdx, inReal, optInTimePeriod,
+                     outBegIdx, outNBElement, outReal);
+#endif
 
    /* Identify the minimum number of price bar needed
     * to calculate at least one output.
@@ -331,6 +335,10 @@ double outReal[],
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
+#ifdef USE_NPP
+   return TA_S_SUM_NPP(startIdx, endIdx, inReal, optInTimePeriod,
+                      outBegIdx, outNBElement, outReal);
+#endif
 /* Generated */    lookbackTotal = (optInTimePeriod-1);
 /* Generated */    if( startIdx < lookbackTotal )
 /* Generated */       startIdx = lookbackTotal;

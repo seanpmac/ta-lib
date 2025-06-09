@@ -207,6 +207,10 @@ double outReal[],
 /* Generated */ #endif /* TA_FUNC_NO_RANGE_CHECK */
 /* Generated */ 
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
+#ifdef USE_NPP
+  return TA_SMA_NPP(startIdx, endIdx, inReal, optInTimePeriod,
+                    outBegIdx, outNBElement, outReal);
+#endif
 
   return FUNCTION_CALL(INT_SMA)( startIdx, endIdx,
                                  inReal, optInTimePeriod,
@@ -374,6 +378,10 @@ TA_RetCode TA_PREFIX(INT_SMA)( int    startIdx,
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
+#ifdef USE_NPP
+  return TA_S_SMA_NPP(startIdx, endIdx, inReal, optInTimePeriod,
+                      outBegIdx, outNBElement, outReal);
+#endif
 /* Generated */   return FUNCTION_CALL(INT_SMA)( startIdx, endIdx,
 /* Generated */                                  inReal, optInTimePeriod,
 /* Generated */                                  outBegIdx, outNBElement, outReal );

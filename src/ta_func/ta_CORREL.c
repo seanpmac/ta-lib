@@ -218,6 +218,11 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+#ifdef USE_NPP
+   return TA_CORREL_NPP(startIdx, endIdx, inReal0, inReal1,
+                        optInTimePeriod, outBegIdx, outNBElement,
+                        outReal);
+#endif
 
    /* Move up the start index if there is not
     * enough initial data.
@@ -354,6 +359,11 @@ double outReal[],
 /* Generated */                         double        outReal[] )
 /* Generated */ #endif
 /* Generated */ {
+#ifdef USE_NPP
+   return TA_S_CORREL_NPP(startIdx, endIdx, inReal0, inReal1,
+                          optInTimePeriod, outBegIdx, outNBElement,
+                          outReal);
+#endif
 /* Generated */     double sumXY, sumX, sumY, sumX2, sumY2, x, y, trailingX, trailingY;
 /* Generated */     double tempReal;
 /* Generated */     int lookbackTotal, today, trailingIdx, outIdx;

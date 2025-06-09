@@ -3,12 +3,12 @@ noinst_LTLIBRARIES = libta_func.la
 AM_CPPFLAGS = -I../ta_common/
 
 libta_func_la_SOURCES = ta_utility.c \
-	ta_ACCBANDS.c \
-	ta_ACOS.c \
-	ta_AD.c \
-	ta_ADD.c \
-	ta_ADOSC.c \
-	ta_ADX.c \
+        ta_ACCBANDS.c \
+        ta_ACOS.c \
+        ta_AD.c \
+       ta_ADD.c \
+       ta_ADOSC.c \
+        ta_ADX.c \
 	ta_ADXR.c \
 	ta_APO.c \
 	ta_AROON.c \
@@ -20,7 +20,7 @@ libta_func_la_SOURCES = ta_utility.c \
 	ta_AVGDEV.c \
 	ta_BBANDS.c \
 	ta_BETA.c \
-	ta_BOP.c \
+        ta_BOP.c \
 	ta_CCI.c \
 	ta_CDL2CROWS.c \
 	ta_CDL3BLACKCROWS.c \
@@ -161,9 +161,39 @@ libta_func_la_SOURCES = ta_utility.c \
 	ta_TYPPRICE.c \
 	ta_ULTOSC.c \
 	ta_VAR.c \
-	ta_WCLPRICE.c \
-	ta_WILLR.c \
-	ta_WMA.c
+        ta_WCLPRICE.c \
+        ta_WILLR.c \
+        ta_WMA.c
+
+if USE_NPP
+libta_func_la_SOURCES += \
+        ta_ADD_NPP.c \
+        ta_DIV_NPP.c \
+        ta_MULT_NPP.c \
+        ta_SUB_NPP.c \
+        ta_SUM_NPP.c \
+        ta_AVGPRICE_NPP.c \
+        ta_SMA_NPP.c \
+        ta_SQRT_NPP.c \
+        ta_ACOS_NPP.c \
+        ta_ASIN_NPP.c \
+        ta_ATAN_NPP.c \
+        ta_CEIL_NPP.c \
+        ta_COS_NPP.c \
+        ta_COSH_NPP.c \
+        ta_EXP_NPP.c \
+        ta_FLOOR_NPP.c \
+        ta_LN_NPP.c \
+        ta_LOG10_NPP.c \
+        ta_SIN_NPP.c \
+        ta_SINH_NPP.c \
+        ta_TAN_NPP.c \
+        ta_TANH_NPP.c \
+        ta_MIN_NPP.c \
+        ta_MAX_NPP.c \
+        ta_CORREL_NPP.c \
+        ta_LINEARREG_SLOPE_NPP.c
+endif
 
 libta_funcdir=$(includedir)/ta-lib/
 libta_func_HEADERS = ../../include/ta_defs.h \

@@ -204,6 +204,10 @@ double outReal[],
    /* Insert TA function code here. */
 
    /* Average price = (High + Low + Open + Close) / 4 */
+#ifdef USE_NPP
+   return TA_AVGPRICE_NPP(startIdx, endIdx, inOpen, inHigh, inLow, inClose,
+                          outBegIdx, outNBElement, outReal);
+#endif
 
    outIdx = 0;
 
@@ -293,8 +297,12 @@ double outReal[],
 /* Generated */        return ENUM_VALUE(RetCode,TA_BAD_PARAM,BadParam);
 /* Generated */     #endif 
 /* Generated */  #endif
-/* Generated */  #endif 
+/* Generated */  #endif
 /* Generated */    outIdx = 0;
+/* Generated */ #ifdef USE_NPP
+/* Generated */    return TA_S_AVGPRICE_NPP(startIdx, endIdx, inOpen, inHigh, inLow, inClose,
+/* Generated */                             outBegIdx, outNBElement, outReal);
+/* Generated */ #endif
 /* Generated */    for( i=startIdx; i <= endIdx; i++ )
 /* Generated */    {
 /* Generated */       outReal[outIdx++] = ( inHigh [i] +

@@ -170,6 +170,400 @@ TA_LIB_API TA_RetCode TA_S_ADD( int    startIdx,
                                            int          *outNBElement,
                                            double        outReal[] );
 
+#ifdef USE_NPP
+TA_LIB_API TA_RetCode TA_ADD_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal0[],
+                                  const double inReal1[],
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_ADD_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal0[],
+                                    const float  inReal1[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_DIV_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal0[],
+                                  const double inReal1[],
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_DIV_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal0[],
+                                    const float  inReal1[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_MULT_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal0[],
+                                   const double inReal1[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_MULT_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal0[],
+                                     const float  inReal1[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_SUB_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal0[],
+                                  const double inReal1[],
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_SUB_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal0[],
+                                    const float  inReal1[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_SUM_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int           optInTimePeriod,
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_SUM_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int           optInTimePeriod,
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_SMA_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int           optInTimePeriod,
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_SMA_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int           optInTimePeriod,
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_SQRT_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_SQRT_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_AVGPRICE_NPP( int    startIdx,
+                                       int    endIdx,
+                                       const double inOpen[],
+                                       const double inHigh[],
+                                       const double inLow[],
+                                       const double inClose[],
+                                       int          *outBegIdx,
+                                       int          *outNBElement,
+                                       double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_AVGPRICE_NPP( int    startIdx,
+                                         int    endIdx,
+                                         const float  inOpen[],
+                                         const float  inHigh[],
+                                         const float  inLow[],
+                                         const float  inClose[],
+                                         int          *outBegIdx,
+                                         int          *outNBElement,
+                                         double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_ACOS_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_ACOS_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_ASIN_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_ASIN_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_ATAN_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_ATAN_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_CEIL_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_CEIL_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_COS_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_COS_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_COSH_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_COSH_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_EXP_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_EXP_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_FLOOR_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const double inReal[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_FLOOR_NPP( int    startIdx,
+                                      int    endIdx,
+                                      const float  inReal[],
+                                      int          *outBegIdx,
+                                      int          *outNBElement,
+                                      double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_LN_NPP( int    startIdx,
+                                 int    endIdx,
+                                 const double inReal[],
+                                 int          *outBegIdx,
+                                 int          *outNBElement,
+                                 double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_LN_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const float  inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_LOG10_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const double inReal[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_LOG10_NPP( int    startIdx,
+                                      int    endIdx,
+                                      const float  inReal[],
+                                      int          *outBegIdx,
+                                      int          *outNBElement,
+                                      double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_SIN_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_SIN_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_SINH_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_SINH_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_TAN_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_TAN_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_TANH_NPP( int    startIdx,
+                                   int    endIdx,
+                                   const double inReal[],
+                                   int          *outBegIdx,
+                                   int          *outNBElement,
+                                   double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_TANH_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const float  inReal[],
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_MIN_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int           optInTimePeriod,
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_MIN_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int           optInTimePeriod,
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_MAX_NPP( int    startIdx,
+                                  int    endIdx,
+                                  const double inReal[],
+                                  int           optInTimePeriod,
+                                  int          *outBegIdx,
+                                  int          *outNBElement,
+                                  double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_MAX_NPP( int    startIdx,
+                                    int    endIdx,
+                                    const float  inReal[],
+                                    int           optInTimePeriod,
+                                    int          *outBegIdx,
+                                    int          *outNBElement,
+                                    double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_CORREL_NPP( int    startIdx,
+                                     int    endIdx,
+                                     const double inReal0[],
+                                     const double inReal1[],
+                                     int           optInTimePeriod,
+                                     int          *outBegIdx,
+                                     int          *outNBElement,
+                                     double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_CORREL_NPP( int    startIdx,
+                                       int    endIdx,
+                                       const float  inReal0[],
+                                       const float  inReal1[],
+                                       int           optInTimePeriod,
+                                       int          *outBegIdx,
+                                       int          *outNBElement,
+                                       double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_LINEARREG_SLOPE_NPP( int    startIdx,
+                                              int    endIdx,
+                                              const double inReal[],
+                                              int           optInTimePeriod,
+                                              int          *outBegIdx,
+                                              int          *outNBElement,
+                                              double        outReal[] );
+
+TA_LIB_API TA_RetCode TA_S_LINEARREG_SLOPE_NPP( int    startIdx,
+                                                int    endIdx,
+                                                const float  inReal[],
+                                                int           optInTimePeriod,
+                                                int          *outBegIdx,
+                                                int          *outNBElement,
+                                                double        outReal[] );
+#endif
+
 TA_LIB_API int TA_ADD_Lookback( void );
 
 

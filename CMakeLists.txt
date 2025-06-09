@@ -17,6 +17,16 @@ set(CMAKE_C_STANDARD 11)
 option(BUILD_DEV_TOOLS "Build development tools (gen_code, ta_regtest)" ON)
 message(STATUS "BUILD_DEV_TOOLS: ${BUILD_DEV_TOOLS}")
 
+option(USE_NPP "Enable NVIDIA Performance Primitives" OFF)
+message(STATUS "USE_NPP: ${USE_NPP}")
+if(USE_NPP)
+    find_package(CUDAToolkit)
+    if(NOT CUDAToolkit_FOUND)
+        message(WARNING "CUDA toolkit not found - disabling NPP")
+        set(USE_NPP OFF)
+    endif()
+endif()
+
 # Default to Release config
 if(NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
@@ -234,9 +244,9 @@ set(LIB_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_CDLUNIQUE3RIVER.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_CDLRISEFALL3METHODS.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_CDLLADDERBOTTOM.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_PLUS_DM.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_ADD.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_STOCHRSI.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_PLUS_DM.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_ADD.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_STOCHRSI.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_CDLHANGINGMAN.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_NVI.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_T3.c"
@@ -374,12 +384,41 @@ set(LIB_SOURCES
 
 list(APPEND LIB_SOURCES ${COMMON_SOURCES})
 list(APPEND LIB_SOURCES ${IDL_SOURCES})
+if(USE_NPP)
+    list(APPEND LIB_SOURCES
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_ADD_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_DIV_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_MULT_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_SUB_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_SUM_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_AVGPRICE_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_SMA_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_SQRT_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_ACOS_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_ASIN_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_ATAN_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_CEIL_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_COS_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_COSH_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_EXP_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_FLOOR_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_LN_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_LOG10_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_SIN_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_SINH_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_TAN_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_TANH_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_MIN_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_MAX_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_CORREL_NPP.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func/ta_LINEARREG_SLOPE_NPP.c")
+endif()
 
 add_library(ta-lib SHARED ${LIB_SOURCES})
 set_target_properties(ta-lib PROPERTIES
-	SOVERSION ${PROJECT_VERSION}
-	DEFINE_SYMBOL TA_LIB_SHARED
-	OUTPUT_NAME "ta-lib"
+        SOVERSION ${PROJECT_VERSION}
+        DEFINE_SYMBOL TA_LIB_SHARED
+        OUTPUT_NAME "ta-lib"
 )
 add_library(ta-lib-static STATIC ${LIB_SOURCES})
 
@@ -391,6 +430,11 @@ if(WIN32)
 	# Note: WIN32 is defined regardless of 32 or 64 bits host.
 	set_target_properties(ta-lib-static PROPERTIES OUTPUT_NAME ta-lib-static)
 endif(WIN32)
+
+if(USE_NPP AND TARGET CUDA::npps)
+    target_link_libraries(ta-lib PRIVATE CUDA::npps CUDA::nppc)
+    target_link_libraries(ta-lib-static PRIVATE CUDA::npps CUDA::nppc)
+endif()
 
 if(MSVC)
 	add_compile_options($<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:/deterministic>)
