@@ -28,6 +28,39 @@ $ make
 ```
 Libraries will be in ```ta-lib/build``` and executable in ```ta-lib/bin```
 
+### Metal acceleration on macOS
+TA-Lib can offload selected indicators to the Apple GPU/NPU via Metal. The
+feature is off by default and currently accelerates the SMA, TRIMA (via staged
+SMA passes), and WMA implementations. Other indicators fall back to the CPU.
+
+- Autotools: build with `./configure --enable-metal` (auto-detects support on macOS).
+- CMake: configure with `cmake -DTA_ENABLE_METAL=ON ..`.
+
+A successful build requires the system Metal and Foundation frameworks (present on
+macOS 13+). When the runtime detects that the GPU backend is unavailable it will
+transparently fall back to the existing CPU implementation.
+
+### Performance harness and reporting
+`bin/ta_perf` measures CPU vs accelerated throughput. Pass `--length`,
+`--period`, or `--iterations` to explore different workloads, e.g.
+`build/bin/ta_perf --length=2000000 --iterations=20`. When Metal support is
+available the tool benchmarks both individual SMA execution and a batched plan
+covering SMA/EMA/RSI/TRIMA/WMA across five timeframes.
+
+Use `scripts/generate_accel_report.py` after building CPU and Metal variants to
+produce a Markdown report that records regression results, timing deltas,
+speedups, and the number of signals processed. The script runs `ta_regtest` and
+`ta_perf` by default and can emit to stdout or a file, for example:
+
+```
+cmake -S . -B build-metal -DTA_ENABLE_METAL=ON && cmake --build build-metal
+cmake -S . -B build-cpu -DTA_ENABLE_METAL=OFF && cmake --build build-cpu
+scripts/generate_accel_report.py --cwd build-metal --output dist/accel_report.md
+```
+
+Run the script with `--skip-regtest` or `--skip-perf` when you want to reuse
+prior command output without rerunning binaries.
+
 ## How to run gen_code
 After ```make```, call ```gen_code``` located in ta-lib/bin
 

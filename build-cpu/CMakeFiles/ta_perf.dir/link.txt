@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/ta_perf.dir/src/tools/ta_perf/ta_perf.c.o -o bin/ta_perf  libta-lib.a -lm

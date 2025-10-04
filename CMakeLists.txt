@@ -82,9 +82,21 @@ message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 message(STATUS "CMAKE_GENERATOR: ${CMAKE_GENERATOR}")
 message(STATUS "CPACK_GENERATOR: ${CPACK_GENERATOR}")
 
+if(APPLE)
+    option(TA_ENABLE_METAL "Enable Metal GPU/NPU acceleration backend" ON)
+else()
+    option(TA_ENABLE_METAL "Enable Metal GPU/NPU acceleration backend" OFF)
+endif()
+if(TA_ENABLE_METAL)
+    enable_language(OBJCXX)
+endif()
+message(STATUS "TA_ENABLE_METAL: ${TA_ENABLE_METAL}")
+
 # TA-Lib public API headers (will be installed by this script)
 set(LIB_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_abstract.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_accel.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_accel_plan.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_common.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_defs.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_func.h"
@@ -97,6 +109,26 @@ set(COMMON_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_retcode.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_version.c"
 )
+
+list(APPEND COMMON_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_accel.c")
+list(APPEND COMMON_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_accel_plan.c")
+
+set(METAL_BACKEND_LIBS)
+
+if(TA_ENABLE_METAL)
+    if(NOT APPLE)
+        message(FATAL_ERROR "TA_ENABLE_METAL requires a macOS toolchain")
+    endif()
+    find_library(METAL_FRAMEWORK Metal)
+    find_library(FOUNDATION_FRAMEWORK Foundation)
+    if(NOT METAL_FRAMEWORK OR NOT FOUNDATION_FRAMEWORK)
+        message(FATAL_ERROR "Failed to locate required Metal/Foundation frameworks")
+    endif()
+    list(APPEND COMMON_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_accel_metal.mm")
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_accel_metal.mm" PROPERTIES LANGUAGE OBJCXX)
+    add_compile_definitions(TA_ACCEL_HAS_METAL=1)
+    set(METAL_BACKEND_LIBS ${METAL_FRAMEWORK} ${FOUNDATION_FRAMEWORK})
+endif()
 
 # TA-Lib specify all its TA functions signature (and meta information
 # such as the "group" it belongs to) using an "interface definition language"
@@ -383,6 +415,11 @@ set_target_properties(ta-lib PROPERTIES
 )
 add_library(ta-lib-static STATIC ${LIB_SOURCES})
 
+if(METAL_BACKEND_LIBS)
+    target_link_libraries(ta-lib PUBLIC ${METAL_BACKEND_LIBS})
+    target_link_libraries(ta-lib-static PUBLIC ${METAL_BACKEND_LIBS})
+endif()
+
 if(UNIX)
 	set_target_properties(ta-lib-static PROPERTIES OUTPUT_NAME ta-lib)
 endif(UNIX)
@@ -471,6 +508,10 @@ if(BUILD_DEV_TOOLS)
 
 	add_executable(gen_code ${GEN_CODE_SOURCES})
 
+	if(METAL_BACKEND_LIBS)
+		target_link_libraries(gen_code PRIVATE ${METAL_BACKEND_LIBS})
+	endif()
+
 	target_compile_definitions(gen_code PRIVATE TA_GEN_CODE)
 
 	set_target_properties(gen_code PROPERTIES
@@ -508,6 +549,7 @@ if(BUILD_DEV_TOOLS)
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_regtest/ta_test_func/test_macd.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_regtest/ta_test_func/test_minmax.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_regtest/ta_test_func/test_mom.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_regtest/ta_test_func/test_accel_plan.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_regtest/ta_test_func/test_per_ema.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_regtest/ta_test_func/test_per_hl.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_regtest/ta_test_func/test_per_hlc.c"
@@ -526,6 +568,10 @@ if(BUILD_DEV_TOOLS)
 	)
 
 	add_executable(ta_regtest ${TA_REGTEST_SOURCES})
+
+	if(METAL_BACKEND_LIBS)
+		target_link_libraries(ta_regtest PRIVATE ${METAL_BACKEND_LIBS})
+	endif()
 
 	# Set the include directories for ta_regtest
 	target_include_directories(ta_regtest PRIVATE
@@ -560,6 +606,47 @@ if(BUILD_DEV_TOOLS)
 		"$<TARGET_FILE:ta_regtest>"
 		"${CMAKE_CURRENT_SOURCE_DIR}/bin/$<TARGET_FILE_NAME:ta_regtest>"
 		DEPENDS ta_regtest
+	)
+
+	############
+	# ta_perf  #
+	############
+	set(TA_PERF_SOURCES
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_perf/ta_perf.c"
+	)
+
+	add_executable(ta_perf ${TA_PERF_SOURCES})
+
+	target_include_directories(ta_perf PRIVATE
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_func"
+		"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	)
+
+	if(METAL_BACKEND_LIBS)
+		target_link_libraries(ta_perf PRIVATE ${METAL_BACKEND_LIBS})
+	endif()
+
+	if(WIN32)
+		target_link_libraries(ta_perf PRIVATE ta-lib-static)
+	else()
+		target_link_libraries(ta_perf PRIVATE ta-lib-static m)
+	endif()
+
+	set_target_properties(ta_perf PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+	)
+
+	install(TARGETS ta_perf
+		RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin"
+	)
+
+	add_custom_target(ensure_ta_perf_in_bin ALL
+		COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/bin"
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		"$<TARGET_FILE:ta_perf>"
+		"${CMAKE_CURRENT_SOURCE_DIR}/bin/$<TARGET_FILE_NAME:ta_perf>"
+		DEPENDS ta_perf
 	)
 endif()
 

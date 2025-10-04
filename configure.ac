@@ -12,6 +12,7 @@ AM_INIT_AUTOMAKE([foreign subdir-objects -Wall -Werror])
 # Checks for programs.
 AM_PROG_AR
 AC_PROG_CC
+AC_PROG_OBJCXX
 LT_INIT
 
 # Autoupdate added the next two lines to ensure that your configure
@@ -20,6 +21,45 @@ AC_CHECK_INCLUDES_DEFAULT
 AC_PROG_EGREP
 
 AC_CHECK_HEADERS([float.h inttypes.h limits.h locale.h stddef.h stdint.h stdlib.h string.h unistd.h wchar.h wctype.h])
+
+AC_ARG_ENABLE([metal],
+  [AS_HELP_STRING([--enable-metal], [Enable Metal GPU/NPU acceleration (macOS only)])],
+  [enable_metal="$enableval"],
+  [enable_metal="auto"])
+
+AC_SUBST([TA_ACCEL_METAL_LIBS], [])
+
+if test "x$enable_metal" != "xno"; then
+  case $host_os in
+    darwin*)
+      AC_LANG_PUSH([Objective C++])
+      AC_CHECK_HEADER([Metal/Metal.h],
+        [enable_metal="yes"],
+        [if test "x$enable_metal" = "xyes"; then
+           AC_MSG_ERROR([Metal/Metal.h header not found])
+         else
+           enable_metal="no"
+         fi])
+      AC_LANG_POP([Objective C++])
+      ;;
+    *)
+      if test "x$enable_metal" = "xyes"; then
+        AC_MSG_ERROR([Metal acceleration requested but host platform is not macOS])
+      fi
+      enable_metal="no"
+      ;;
+  esac
+fi
+
+if test "x$enable_metal" = "xyes"; then
+  AC_DEFINE([TA_ACCEL_HAS_METAL], [1], [Define if Metal acceleration backend is enabled])
+  TA_ACCEL_METAL_LIBS="-framework Metal -framework Foundation"
+fi
+
+AM_CONDITIONAL([ENABLE_METAL_ACCEL], [test "x$enable_metal" = "xyes"])
+
+AC_SUBST([TA_ENABLE_METAL], [$enable_metal])
+AC_SUBST([TA_ACCEL_METAL_LIBS])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -47,5 +87,5 @@ TALIB_LIBRARY_VERSION=0:0:0
 
 AC_SUBST(TALIB_LIBRARY_VERSION)
 
-AC_CONFIG_FILES([Makefile src/Makefile src/ta_abstract/Makefile src/ta_common/Makefile src/ta_func/Makefile src/tools/Makefile src/tools/gen_code/Makefile src/tools/ta_regtest/Makefile ta-lib.pc ta-lib.spec ta-lib.dpkg])
+AC_CONFIG_FILES([Makefile src/Makefile src/ta_abstract/Makefile src/ta_common/Makefile src/ta_func/Makefile src/tools/Makefile src/tools/gen_code/Makefile src/tools/ta_regtest/Makefile src/tools/ta_perf/Makefile ta-lib.pc ta-lib.spec ta-lib.dpkg])
 AC_OUTPUT

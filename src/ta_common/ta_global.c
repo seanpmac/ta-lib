@@ -63,6 +63,7 @@
 #include "ta_magic_nb.h"
 #include "ta_global.h"
 #include "ta_func.h"
+#include "ta_accel.h"
 
 /**** External functions declarations. ****/
 /* None */
@@ -100,6 +101,8 @@ TA_RetCode TA_Initialize( void )
    /* Set the default value to global variables */
    TA_RestoreCandleDefaultSettings( TA_AllCandleSettings );
 
+   TA_accel_init();
+
    return TA_SUCCESS;
 }
 
@@ -107,6 +110,8 @@ TA_RetCode TA_Shutdown( void )
 {
    if( TA_Globals->magicNb != TA_LIBC_PRIV_MAGIC_NB )
       return TA_LIB_NOT_INITIALIZE;
+
+   TA_accel_shutdown();
 
    /* Initialize to all zero to make sure we invalidate that object. */
    memset( TA_Globals, 0, sizeof( TA_LibcPriv ) );
@@ -174,5 +179,4 @@ TA_RetCode TA_RestoreCandleDefaultSettings( TA_CandleSettingType settingType )
 
 /**** Local functions definitions.     ****/
 /* None */
-
 

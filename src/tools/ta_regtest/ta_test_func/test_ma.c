@@ -58,6 +58,9 @@
 #include "ta_test_func.h"
 #include "ta_utility.h"
 #include "ta_memory.h"
+#include "ta_accel.h"
+
+#include <math.h>
 
 /**** External functions declarations. ****/
 /* None */
@@ -110,6 +113,12 @@ typedef struct
 static ErrorNumber do_test_ma( const TA_History *history,
                                const TA_Test *test,
 							   int testMAVP /* Boolean */ );
+static ErrorNumber test_sma_acceleration_parity( const TA_History *history );
+static void compute_sma_cpu( const TA_Real *inReal,
+                             TA_Integer    optInTimePeriod,
+                             TA_Integer    startIdx,
+                             TA_Integer    endIdx,
+                             TA_Real      *outReal );
 
 /**** Local variables definitions.     ****/
 
@@ -401,6 +410,10 @@ ErrorNumber test_func_ma( TA_History *history )
    /* Re-initialize all the unstable period to zero. */
    TA_SetUnstablePeriod( TA_FUNC_UNST_ALL, 0 );
 
+   retValue = test_sma_acceleration_parity( history );
+   if( retValue != TA_TEST_PASS )
+      return retValue;
+
    /* All test succeed. */
    return TA_TEST_PASS;
 }
@@ -493,6 +506,152 @@ static TA_RetCode rangeTestFunction( TA_Integer    startIdx,
   }
 
   return retCode;
+}
+
+static ErrorNumber test_sma_acceleration_parity( const TA_History *history )
+{
+   static const TA_Integer kPeriods[] = { 2, 5, 14, 30, 50 };
+   const unsigned int nbPeriods = sizeof(kPeriods) / sizeof(kPeriods[0]);
+   unsigned int periodIdx;
+
+   if( !TA_accel_is_ready() )
+      return TA_TEST_PASS;
+
+   if( history->close == NULL || history->nbBars == 0 )
+      return TA_TEST_PASS;
+
+   for( periodIdx = 0; periodIdx < nbPeriods; ++periodIdx )
+   {
+      const TA_Integer optInTimePeriod = kPeriods[periodIdx];
+      const TA_Integer lookback = TA_SMA_Lookback( optInTimePeriod );
+      TA_Integer startIdx = lookback;
+      TA_Integer endIdx = (TA_Integer)history->nbBars - 1;
+      TA_Integer expectedNbElement;
+      TA_Integer outBegIdx = 0;
+      TA_Integer outNbElement = 0;
+      TA_RetCode retCode;
+      TA_Real *libOut;
+      TA_Real *cpuOut;
+      TA_Real *accelOut;
+
+      if( startIdx > endIdx )
+         continue;
+
+      expectedNbElement = endIdx - startIdx + 1;
+
+      libOut = (TA_Real *)TA_Malloc( sizeof(TA_Real) * (unsigned int)expectedNbElement );
+      cpuOut = (TA_Real *)TA_Malloc( sizeof(TA_Real) * (unsigned int)expectedNbElement );
+      accelOut = (TA_Real *)TA_Malloc( sizeof(TA_Real) * (unsigned int)expectedNbElement );
+
+      if( !libOut || !cpuOut || !accelOut )
+      {
+         TA_Free( libOut );
+         TA_Free( cpuOut );
+         TA_Free( accelOut );
+         return TA_TESTUTIL_DRT_ALLOC_ERR;
+      }
+
+      retCode = TA_SMA( startIdx,
+                        endIdx,
+                        history->close,
+                        optInTimePeriod,
+                        &outBegIdx,
+                        &outNbElement,
+                        libOut );
+      if( retCode != TA_SUCCESS )
+      {
+         TA_Free( libOut );
+         TA_Free( cpuOut );
+         TA_Free( accelOut );
+         reportError( "TA_SMA accelerated parity", retCode );
+         return TA_ACCEL_TST_SMA_RETCODE_FAIL;
+      }
+
+      if( outBegIdx != startIdx || outNbElement != expectedNbElement )
+      {
+         TA_Free( libOut );
+         TA_Free( cpuOut );
+         TA_Free( accelOut );
+         return TA_ACCEL_TST_SMA_SHAPE_FAIL;
+      }
+
+      if( !TA_accel_sma_double( history->close,
+                                optInTimePeriod,
+                                startIdx,
+                                endIdx,
+                                lookback,
+                                accelOut ) )
+      {
+         TA_Free( libOut );
+         TA_Free( cpuOut );
+         TA_Free( accelOut );
+         return TA_ACCEL_TST_SMA_ACCEL_FAILED;
+      }
+
+      compute_sma_cpu( history->close,
+                       optInTimePeriod,
+                       startIdx,
+                       endIdx,
+                       cpuOut );
+
+      {
+         const double tolerance = 5e-5;
+         TA_Integer i;
+
+         for( i = 0; i < outNbElement; ++i )
+         {
+            const double refVal = cpuOut[i];
+            const double accelDiff = fabs( accelOut[i] - refVal );
+            const double libDiff = fabs( libOut[i] - refVal );
+            /* Tolerance chosen to accommodate float precision within the Metal kernel. */
+
+            if( accelDiff > tolerance || libDiff > tolerance )
+            {
+               printf( "SMA acceleration mismatch (period=%d idx=%d) ref=%f accel=%f lib=%f diff=%e/%e\n",
+                       (int)optInTimePeriod,
+                       (int)(startIdx + i),
+                       refVal,
+                       accelOut[i],
+                       libOut[i],
+                       accelDiff,
+                       libDiff );
+               TA_Free( libOut );
+               TA_Free( cpuOut );
+               TA_Free( accelOut );
+               return TA_ACCEL_TST_SMA_TOLERANCE_FAIL;
+            }
+         }
+      }
+
+      TA_Free( libOut );
+      TA_Free( cpuOut );
+      TA_Free( accelOut );
+   }
+
+   return TA_TEST_PASS;
+}
+
+static void compute_sma_cpu( const TA_Real *inReal,
+                             TA_Integer    optInTimePeriod,
+                             TA_Integer    startIdx,
+                             TA_Integer    endIdx,
+                             TA_Real      *outReal )
+{
+   const TA_Integer lookback = optInTimePeriod - 1;
+   TA_Integer trailingIdx = startIdx - lookback;
+   TA_Integer i;
+   TA_Integer outIdx = 0;
+   double periodTotal = 0.0;
+
+   for( i = trailingIdx; i < startIdx; ++i )
+      periodTotal += inReal[i];
+
+   for( i = startIdx; i <= endIdx; ++i )
+   {
+      periodTotal += inReal[i];
+      outReal[outIdx++] = (TA_Real)(periodTotal / optInTimePeriod);
+      periodTotal -= inReal[trailingIdx++];
+   }
 }
 
 static ErrorNumber do_test_ma( const TA_History *history,
@@ -813,4 +972,3 @@ static ErrorNumber do_test_ma( const TA_History *history,
 
    return TA_TEST_PASS;
 }
-

@@ -242,6 +242,7 @@ RetCode TA_INT_SMA( int    startIdx,
                     MInteger outNBElement,
                     double   outReal[] )
 #else
+#include "ta_accel.h"
 TA_RetCode TA_PREFIX(INT_SMA)( int    startIdx,
                                int    endIdx,
                                const INPUT_TYPE *inReal,
@@ -256,7 +257,7 @@ TA_RetCode TA_PREFIX(INT_SMA)( int    startIdx,
 
    /* Identify the minimum number of price bar needed
     * to calculate at least one output.
-    */
+   */
    lookbackTotal = (optInTimePeriod-1);
 
    /* Move up the start index if there is not
@@ -270,6 +271,18 @@ TA_RetCode TA_PREFIX(INT_SMA)( int    startIdx,
    {
       VALUE_HANDLE_DEREF_TO_ZERO(outBegIdx);
       VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
+      return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
+   }
+
+   if( TA_accel_sma_double(inReal,
+                           optInTimePeriod,
+                           startIdx,
+                           endIdx,
+                           lookbackTotal,
+                           outReal) )
+   {
+      VALUE_HANDLE_DEREF(outNBElement) = endIdx - startIdx + 1;
+      VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
       return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
    }
 
@@ -454,4 +467,3 @@ TA_RetCode TA_PREFIX(INT_SMA)( int    startIdx,
 /* Generated */ } // Close impl core
 /* Generated */ #endif
 /**** END GENCODE SECTION 5 - DO NOT DELETE THIS LINE ****/
-

@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+3e2b7b9ba942449a0867c3e38b2b0bac CMakeFiles/ensure_gen_code_in_bin
+86f327d29537135c8774ede5c3599e86 CMakeFiles/ensure_ta_perf_in_bin
+a187361aa51ad063ee9b2e5617473421 CMakeFiles/ensure_ta_regtest_in_bin

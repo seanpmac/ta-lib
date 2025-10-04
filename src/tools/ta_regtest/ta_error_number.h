@@ -202,6 +202,12 @@ typedef enum
   TA_PM_TEST_ARRAY_ID_FAILED_9          = 457,
   TA_PM_TEST_ARRAY_WITH_INVALID_DATE    = 458,
 
+  /* Error code related to acceleration parity tests */
+  TA_ACCEL_TST_SMA_RETCODE_FAIL         = 470,
+  TA_ACCEL_TST_SMA_SHAPE_FAIL           = 471,
+  TA_ACCEL_TST_SMA_ACCEL_FAILED         = 472,
+  TA_ACCEL_TST_SMA_TOLERANCE_FAIL       = 473,
+
   /* Error code related to call to ta_abstract */
   TA_ABS_TST_FAIL_GETFUNCHANDLE         = 600,
   TA_ABS_TST_FAIL_GETFUNCINFO           = 601,

@@ -1,0 +1,16 @@
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/ta-lib.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/ta-lib-static.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/gen_code.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/ensure_gen_code_in_bin.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/ta_regtest.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/ensure_ta_regtest_in_bin.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/ta_perf.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/ensure_ta_perf_in_bin.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/package.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/package_source.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/edit_cache.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/rebuild_cache.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/list_install_components.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/install.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/install/local.dir
+/Users/Sean/GitHub/ta-lib/build-cpu/CMakeFiles/install/strip.dir
