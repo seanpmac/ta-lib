@@ -1,0 +1,487 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TALib.Net</name>
+    </assembly>
+    <members>
+        <member name="T:TALib.Net.MacdResult">
+            <summary>
+            Holds the output series produced by the MACD indicator.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.MacdResult.Macd">
+            <summary>MACD line values.</summary>
+        </member>
+        <member name="P:TALib.Net.MacdResult.Signal">
+            <summary>Signal line values.</summary>
+        </member>
+        <member name="P:TALib.Net.MacdResult.Histogram">
+            <summary>Histogram values.</summary>
+        </member>
+        <member name="T:TALib.Net.MovingAverageType">
+            <summary>
+            Moving average algorithm identifiers used by TA-Lib (TA_MAType).
+            </summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Sma">
+            <summary>Simple moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Ema">
+            <summary>Exponential moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Wma">
+            <summary>Weighted moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Dema">
+            <summary>Double exponential moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Tema">
+            <summary>Triple exponential moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Trima">
+            <summary>Triangular moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Kama">
+            <summary>Kaufman's adaptive moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.Mama">
+            <summary>MESA adaptive moving average.</summary>
+        </member>
+        <member name="F:TALib.Net.MovingAverageType.T3">
+            <summary>Triple exponential moving average (T3).</summary>
+        </member>
+        <member name="T:TALib.Net.TaFunctionFlags">
+            <summary>
+            Flags attached to a TA function.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaInputParameterType">
+            <summary>
+            Describes the type of an input parameter.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaInputFlags">
+            <summary>
+            Flags describing which price components are required for a price input.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaOptInputParameterType">
+            <summary>
+            Describes the kind of optional input.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaOptInputFlags">
+            <summary>
+            Flags providing hints about an optional input parameter.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaOutputParameterType">
+            <summary>
+            Output types exposed by TA-Lib.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaOutputFlags">
+            <summary>
+            Display hints exposed for TA-Lib outputs.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaValueLabel">
+            <summary>
+            Describes a named numeric value for an optional input list.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaValueLabel.#ctor(System.Double,System.String)">
+            <summary>
+            Describes a named numeric value for an optional input list.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaIntegerValueLabel">
+            <summary>
+            Describes a named integer value for an optional input list.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaIntegerValueLabel.#ctor(System.Int32,System.String)">
+            <summary>
+            Describes a named integer value for an optional input list.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaRealRange">
+            <summary>
+            Represents range metadata for a real-valued optional input.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaRealRange.#ctor(System.Double,System.Double,System.Int32,System.Double,System.Double,System.Double)">
+            <summary>
+            Represents range metadata for a real-valued optional input.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaIntegerRange">
+            <summary>
+            Represents range metadata for an integer optional input.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaIntegerRange.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Represents range metadata for an integer optional input.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaInputParameterInfo">
+            <summary>
+            Metadata describing a single input parameter.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaInputParameterInfo.#ctor(System.String,TALib.Net.TaInputParameterType,TALib.Net.TaInputFlags)">
+            <summary>
+            Metadata describing a single input parameter.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaOptInputParameterInfo">
+            <summary>
+            Metadata describing an optional input parameter.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaOptInputParameterInfo.#ctor(System.String,TALib.Net.TaOptInputParameterType,TALib.Net.TaOptInputFlags,System.String,System.Double,System.String,System.String,TALib.Net.TaRealRange,System.Collections.Generic.IReadOnlyList{TALib.Net.TaValueLabel},TALib.Net.TaIntegerRange,System.Collections.Generic.IReadOnlyList{TALib.Net.TaIntegerValueLabel})">
+            <summary>
+            Metadata describing an optional input parameter.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaOutputParameterInfo">
+            <summary>
+            Metadata describing a single output parameter.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaOutputParameterInfo.#ctor(System.String,TALib.Net.TaOutputParameterType,TALib.Net.TaOutputFlags)">
+            <summary>
+            Metadata describing a single output parameter.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaFunctionDescriptor">
+            <summary>
+            Provides read-only metadata about a TA-Lib function.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.Name">
+            <summary>
+            Gets the canonical function name (for example "RSI").
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.Group">
+            <summary>
+            Gets the group under which TA-Lib categorises the function.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.Hint">
+            <summary>
+            Gets the descriptive hint associated with the function, if any.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.CamelCaseName">
+            <summary>
+            Gets the camel-case version of the function name.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.Flags">
+            <summary>
+            Gets function-level flags.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.Inputs">
+            <summary>
+            Gets the required input parameters.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.OptionalInputs">
+            <summary>
+            Gets the optional input parameters.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionDescriptor.Outputs">
+            <summary>
+            Gets the output parameters.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionDescriptor.CreateInvocation">
+            <summary>
+            Creates a mutable function invocation that can be populated and executed.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaFunctionInvocation">
+            <summary>
+            Represents a pending invocation of a TA-Lib function.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.SetInputReal(System.Int32,System.Double[])">
+            <summary>
+            Sets a real-valued input series.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.SetInputInteger(System.Int32,System.Int32[])">
+            <summary>
+            Sets an integer-valued input series.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.SetInputPrice(System.Int32,System.Double[],System.Double[],System.Double[],System.Double[],System.Double[],System.Double[])">
+            <summary>
+            Sets a price-series input, providing the required components.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.SetOptionalReal(System.Int32,System.Double)">
+            <summary>
+            Sets a real-valued optional input.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.SetOptionalInteger(System.Int32,System.Int32)">
+            <summary>
+            Sets an integer-valued optional input.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.SetOutputReal(System.Int32,System.Double[])">
+            <summary>
+            Assigns a real-valued output buffer.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.SetOutputInteger(System.Int32,System.Int32[])">
+            <summary>
+            Assigns an integer-valued output buffer.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.GetLookback">
+            <summary>
+            Queries the lookback period implied by the current optional input configuration.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.Execute(System.Int32,System.Int32)">
+            <summary>
+            Executes the configured function and returns the starting index and element count for the outputs.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionInvocation.Dispose">
+            <inheritdoc />
+        </member>
+        <member name="T:TALib.Net.TaFunctionResult">
+            <summary>
+            Result metadata returned when invoking a TA function.
+            </summary>
+            <param name="StartIndex">Index within the input series corresponding to the first output element.</param>
+            <param name="ElementCount">Number of populated elements in each output buffer.</param>
+        </member>
+        <member name="M:TALib.Net.TaFunctionResult.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Result metadata returned when invoking a TA function.
+            </summary>
+            <param name="StartIndex">Index within the input series corresponding to the first output element.</param>
+            <param name="ElementCount">Number of populated elements in each output buffer.</param>
+        </member>
+        <member name="P:TALib.Net.TaFunctionResult.StartIndex">
+            <summary>Index within the input series corresponding to the first output element.</summary>
+        </member>
+        <member name="P:TALib.Net.TaFunctionResult.ElementCount">
+            <summary>Number of populated elements in each output buffer.</summary>
+        </member>
+        <member name="T:TALib.Net.TaFunctionCatalog">
+            <summary>
+            Provides access to the full TA-Lib function catalogue and metadata.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionCatalog.GetGroups">
+            <summary>
+            Lists all available function groups.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionCatalog.GetFunctionNames(System.String)">
+            <summary>
+            Lists all function names belonging to the specified group.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionCatalog.GetFunction(System.String)">
+            <summary>
+            Retrieves detailed metadata for the specified function name.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaFunctionCatalog.GetFunctionDescriptionXml">
+            <summary>
+            Returns the XML representation of the TA-Lib API (equivalent to <c>ta_func_api.xml</c>).
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaLibCore">
+            <summary>
+            High-level helper APIs for invoking TA-Lib functions from managed code.
+            </summary>
+        </member>
+        <member name="P:TALib.Net.TaLibCore.IsInitialized">
+            <summary>
+            Gets a value indicating whether the native library has been initialized.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.Initialize">
+            <summary>
+            Initializes the underlying native TA-Lib library. Invocation is idempotent.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.Shutdown">
+            <summary>
+            Shuts down the native TA-Lib library and releases global resources.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.GetVersionString">
+            <summary>
+            Gets the version string reported by the native TA-Lib binary.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.CalculateSimpleMovingAverage(System.Double[],System.Int32)">
+            <summary>
+            Calculates a simple moving average (SMA) over the supplied data.
+            </summary>
+            <param name="values">Input data points.</param>
+            <param name="period">Window length for the moving average.</param>
+            <returns>An array containing the SMA values. The first <paramref name="period"/> - 1 items are omitted.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="values"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when <paramref name="period"/> is less than 1.</exception>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.CalculateMovingAverage(System.Double[],System.Int32,TALib.Net.MovingAverageType)">
+            <summary>
+            Calculates a moving average using the algorithm specified by <paramref name="type"/>.
+            </summary>
+            <param name="values">Input data points.</param>
+            <param name="period">Window length for the moving average.</param>
+            <param name="type">The moving average type to compute.</param>
+            <returns>An array containing the moving average values.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="values"/> is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when <paramref name="period"/> is less than 1.</exception>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.CalculateRelativeStrengthIndex(System.Double[],System.Int32)">
+            <summary>
+            Calculates the relative strength index (RSI) over the supplied data.
+            </summary>
+            <param name="values">Input data points.</param>
+            <param name="period">Lookback length for RSI.</param>
+            <returns>The RSI output series.</returns>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.CalculateMacd(System.Double[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Calculates the Moving Average Convergence Divergence (MACD) indicator.
+            </summary>
+            <param name="values">Input data points.</param>
+            <param name="fastPeriod">Number of periods for the fast EMA.</param>
+            <param name="slowPeriod">Number of periods for the slow EMA.</param>
+            <param name="signalPeriod">Number of periods for the signal line EMA.</param>
+            <returns>MACD line, signal line, and histogram arrays.</returns>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.GetSimpleMovingAverageLookback(System.Int32)">
+            <summary>
+            Gets the lookback period for the simple moving average (number of warm-up samples).
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.GetMovingAverageLookback(System.Int32)">
+            <summary>
+            Gets the lookback period for the generic TA_MA function.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.GetRelativeStrengthIndexLookback(System.Int32)">
+            <summary>
+            Gets the lookback period for the RSI indicator.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibCore.GetMacdLookback(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Gets the lookback period for the MACD indicator.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaLibEnvironment">
+            <summary>
+            Provides configuration helpers for locating the native TA-Lib binaries.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibEnvironment.AddNativeLibraryDirectory(System.String)">
+            <summary>
+            Adds a directory to the search path used when resolving the native TA-Lib shared library.
+            </summary>
+            <param name="path">Absolute or relative path containing the TA-Lib binaries.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="path"/> is null or whitespace.</exception>
+        </member>
+        <member name="M:TALib.Net.TaLibEnvironment.GetNativeLibraryDirectories">
+            <summary>
+            Gets the list of directories that will be probed for the native TA-Lib shared library.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaLibException">
+            <summary>
+            Exception type thrown when the native TA-Lib library reports an error.
+            </summary>
+        </member>
+        <member name="M:TALib.Net.TaLibException.#ctor(TALib.Net.TaRetCode,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TALib.Net.TaLibException"/> class.
+            </summary>
+            <param name="retCode">The return code reported by TA-Lib.</param>
+            <param name="message">Optional human-readable description.</param>
+        </member>
+        <member name="P:TALib.Net.TaLibException.RetCode">
+            <summary>
+            Gets the return code reported by TA-Lib.
+            </summary>
+        </member>
+        <member name="T:TALib.Net.TaRetCode">
+            <summary>
+            Return codes from the native TA-Lib C library (TA_RetCode).
+            </summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.Success">
+            <summary>Operation completed successfully.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.LibNotInitialize">
+            <summary>TA_Initialize was not successfully called.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.BadParam">
+            <summary>A parameter value falls outside the allowed range.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.AllocErr">
+            <summary>Native allocation failed, usually due to low memory.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.GroupNotFound">
+            <summary>The requested group identifier does not exist.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.FuncNotFound">
+            <summary>The requested function identifier does not exist.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.InvalidHandle">
+            <summary>An invalid handle was supplied.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.InvalidParamHolder">
+            <summary>An invalid parameter holder pointer was supplied.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.InvalidParamHolderType">
+            <summary>The parameter holder type is not valid for this function.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.InvalidParamFunction">
+            <summary>The parameter holder function pointer is invalid.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.InputNotAllInitialize">
+            <summary>Not all required inputs were initialized.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.OutputNotAllInitialize">
+            <summary>Not all required outputs were initialized.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.OutOfRangeStartIndex">
+            <summary>The start index parameter is outside the valid range.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.OutOfRangeEndIndex">
+            <summary>The end index parameter is outside the valid range.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.InvalidListType">
+            <summary>The requested list type is not valid.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.BadObject">
+            <summary>The supplied object is not valid.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.NotSupported">
+            <summary>The requested feature is not supported.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.InternalError">
+            <summary>An unexpected internal error occurred.</summary>
+        </member>
+        <member name="F:TALib.Net.TaRetCode.UnknownErr">
+            <summary>An unknown error occurred.</summary>
+        </member>
+    </members>
+</doc>

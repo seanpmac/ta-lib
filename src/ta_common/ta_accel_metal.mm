@@ -49,7 +49,6 @@ static NSUInteger gBlockCapacityDouble = 0;
 
 static std::vector<float> gScratchDoubleInput;
 static std::vector<float> gScratchOutput;
-static std::vector<float> gScratchWeighted;
 static std::vector<double> gScratchWeightedDouble;
 
 static const NSUInteger kThreadgroupSize = 256;
@@ -112,24 +111,22 @@ static const char *kSMAKernelSource =
 "    float startValue = (gid == 0) ? 0.0f : prefix[gid - 1];\n"
 "    outValues[gid] = (endValue - startValue) / float(period);\n"
 "}\n"
-"kernel void wma_from_prefix(const device float *prefix [[buffer(0)]],\n"
-"                            const device float *weightedPrefix [[buffer(1)]],\n"
-"                            device float *outValues [[buffer(2)]],\n"
-"                            constant uint &period [[buffer(3)]],\n"
-"                            constant uint &outputCount [[buffer(4)]],\n"
+"kernel void wma_from_samples(const device float *input [[buffer(0)]],\n"
+"                            device float *outValues [[buffer(1)]],\n"
+"                            constant uint &period [[buffer(2)]],\n"
+"                            constant uint &outputCount [[buffer(3)]],\n"
 "                            uint gid [[thread_position_in_grid]])\n"
 "{\n"
 "    if (gid >= outputCount)\n"
 "        return;\n"
-"    uint endIndex = gid + period - 1;\n"
-"    float endValue = prefix[endIndex];\n"
-"    float startValue = (gid == 0) ? 0.0f : prefix[gid - 1];\n"
-"    float weightedEnd = weightedPrefix[endIndex];\n"
-"    float weightedStart = (gid == 0) ? 0.0f : weightedPrefix[gid - 1];\n"
-"    float baseSum = endValue - startValue;\n"
-"    float numerator = (weightedEnd - weightedStart) - float(gid) * baseSum;\n"
+"    uint start = gid;\n"
+"    float weighted = 0.0f;\n"
+"    for (uint k = 0; k < period; ++k) {\n"
+"        float value = input[start + k];\n"
+"        weighted += float(k + 1u) * value;\n"
+"    }\n"
 "    float denom = float(period) * float(period + 1u) * 0.5f;\n"
-"    outValues[gid] = numerator / denom;\n"
+"    outValues[gid] = weighted / denom;\n"
 "}\n";
 
 static const char *kSMAKernelSourceDouble =
@@ -343,7 +340,7 @@ static bool ensure_pipeline(void)
         id<MTLFunction> scanFunction = [library newFunctionWithName:@"prefix_scan"];
         id<MTLFunction> addFunction = [library newFunctionWithName:@"add_block_offsets"];
         id<MTLFunction> smaFunction = [library newFunctionWithName:@"sma_from_prefix"];
-        id<MTLFunction> wmaFunction = [library newFunctionWithName:@"wma_from_prefix"];
+        id<MTLFunction> wmaFunction = [library newFunctionWithName:@"wma_from_samples"];
 
         bool haveFloatPipelines = (scanFunction && addFunction && smaFunction && wmaFunction);
 
@@ -654,7 +651,7 @@ static bool run_wma_kernel_double(const double *inReal,
     if (!ensure_pipeline())
         return false;
 
-    if (!inReal || !outReal || !weightedScratch)
+    if (!inReal || !outReal)
         return false;
 
     if (inputCount <= 0 || outputCount <= 0)
@@ -886,14 +883,13 @@ static bool run_sma_kernel_double(const double *inReal,
 static bool run_wma_kernel(const float *inReal,
                            int inputCount,
                            int optInTimePeriod,
-                           float *weightedScratch,
                            float *outReal,
                            int outputCount)
 {
     if (!ensure_pipeline())
         return false;
 
-    if (!inReal || !outReal || !weightedScratch)
+    if (!inReal || !outReal)
         return false;
 
     if (inputCount <= 0 || outputCount <= 0)
@@ -907,19 +903,9 @@ static bool run_wma_kernel(const float *inReal,
     const NSUInteger period = static_cast<NSUInteger>(optInTimePeriod);
 
     id<MTLBuffer> inputBuffer = nil;
-    id<MTLBuffer> prefixBuffer = nil;
-    id<MTLBuffer> prefixWeightedBuffer = nil;
-    id<MTLBuffer> blockBuffer = nil;
     id<MTLBuffer> outputBuffer = nil;
 
     if (!ensure_buffer_capacity(gInputBuffer, gInputCapacity, inputLength, sizeof(float), inputBuffer))
-        return false;
-    if (!ensure_buffer_capacity(gPrefixBuffer, gPrefixCapacity, inputLength, sizeof(float), prefixBuffer))
-        return false;
-    if (!ensure_buffer_capacity(gPrefixWeightedBuffer, gPrefixWeightedCapacity, inputLength, sizeof(float), prefixWeightedBuffer))
-        return false;
-    const NSUInteger blockCount = (inputLength + kThreadgroupSize - 1) / kThreadgroupSize;
-    if (!ensure_buffer_capacity(gBlockBuffer, gBlockCapacity, std::max<NSUInteger>(blockCount, 1), sizeof(float), blockBuffer))
         return false;
     if (!ensure_buffer_capacity(gOutputBuffer, gOutputCapacity, outputLength, sizeof(float), outputBuffer))
         return false;
@@ -928,14 +914,11 @@ static bool run_wma_kernel(const float *inReal,
     if (!outputPtr)
         return false;
 
-    if (!compute_prefix_from_host(inReal, inputLength, inputBuffer, prefixBuffer, blockBuffer))
+    float *inputPtr = static_cast<float *>([inputBuffer contents]);
+    if (!inputPtr)
         return false;
 
-    for (NSUInteger i = 0; i < inputLength; ++i)
-        weightedScratch[i] = inReal[i] * static_cast<float>(i + 1U);
-
-    if (!compute_prefix_from_host(weightedScratch, inputLength, inputBuffer, prefixWeightedBuffer, blockBuffer))
-        return false;
+    memcpy(inputPtr, inReal, sizeof(float) * inputLength);
 
     @autoreleasepool {
         id<MTLCommandBuffer> commandBuffer = [gQueue commandBuffer];
@@ -953,11 +936,10 @@ static bool run_wma_kernel(const float *inReal,
             tgSizeWMA.width = kThreadgroupSize;
 
         [encoder setComputePipelineState:gWMAState];
-        [encoder setBuffer:prefixBuffer offset:0 atIndex:0];
-        [encoder setBuffer:prefixWeightedBuffer offset:0 atIndex:1];
-        [encoder setBuffer:outputBuffer offset:0 atIndex:2];
-        [encoder setBytes:&period32 length:sizeof(period32) atIndex:3];
-        [encoder setBytes:&output32 length:sizeof(output32) atIndex:4];
+        [encoder setBuffer:inputBuffer offset:0 atIndex:0];
+        [encoder setBuffer:outputBuffer offset:0 atIndex:1];
+        [encoder setBytes:&period32 length:sizeof(period32) atIndex:2];
+        [encoder setBytes:&output32 length:sizeof(output32) atIndex:3];
         [encoder dispatchThreads:MTLSizeMake(outputLength, 1, 1) threadsPerThreadgroup:tgSizeWMA];
         [encoder endEncoding];
 
@@ -1039,6 +1021,9 @@ extern "C" bool TA_accel_metal_wma_double(const double *inReal,
     if (inputCount <= 0 || outputCount <= 0)
         return false;
 
+    if (!gSupportsDoublePrecision)
+        return false;
+
     if (gSupportsDoublePrecision) {
         gScratchWeightedDouble.resize(static_cast<size_t>(inputCount));
         return run_wma_kernel_double(inReal,
@@ -1049,26 +1034,5 @@ extern "C" bool TA_accel_metal_wma_double(const double *inReal,
                                      outputCount);
     }
 
-    gScratchDoubleInput.resize(static_cast<size_t>(inputCount));
-    gScratchWeighted.resize(static_cast<size_t>(inputCount));
-    gScratchOutput.resize(static_cast<size_t>(outputCount));
-
-    for (int i = 0; i < inputCount; ++i)
-        gScratchDoubleInput[static_cast<size_t>(i)] = static_cast<float>(inReal[i]);
-
-    for (int i = 0; i < inputCount; ++i)
-        gScratchWeighted[static_cast<size_t>(i)] = static_cast<float>(inReal[i] * static_cast<double>(i + 1U));
-
-    if (!run_wma_kernel(gScratchDoubleInput.data(),
-                        inputCount,
-                        optInTimePeriod,
-                        gScratchWeighted.data(),
-                        gScratchOutput.data(),
-                        outputCount))
-        return false;
-
-    for (int i = 0; i < outputCount; ++i)
-        outReal[i] = static_cast<double>(gScratchOutput[static_cast<size_t>(i)]);
-
-    return true;
+    return false;
 }

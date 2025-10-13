@@ -1,0 +1,68 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/Sean/GitHub/ta-lib/dotnet/net9/src/TALib.Net/TALib.Net.csproj": {}
+  },
+  "projects": {
+    "/Users/Sean/GitHub/ta-lib/dotnet/net9/src/TALib.Net/TALib.Net.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/Sean/GitHub/ta-lib/dotnet/net9/src/TALib.Net/TALib.Net.csproj",
+        "projectName": "TALib.Net",
+        "projectPath": "/Users/Sean/GitHub/ta-lib/dotnet/net9/src/TALib.Net/TALib.Net.csproj",
+        "packagesPath": "/Users/Sean/.nuget/packages/",
+        "outputPath": "/Users/Sean/GitHub/ta-lib/dotnet/net9/src/TALib.Net/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/Sean/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
