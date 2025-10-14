@@ -290,6 +290,74 @@ TA_LIB_API int TA_ADXR_Lookback( int           optInTimePeriod );  /* From 2 to 
 
 
 /*
+ * TA_ALLIGATOR - Williams Alligator
+ * 
+ * Input  = High, Low
+ * Output = double, double, double
+ * 
+ * Optional Parameters
+ * -------------------
+ * optInJawPeriod:(From 1 to 100000)
+ *    Number of periods for the jaw smoothing
+ * 
+ * optInJawOffset:(From 1 to 100000)
+ *    Forward offset applied to the jaw line
+ * 
+ * optInTeethPeriod:(From 1 to 100000)
+ *    Number of periods for the teeth smoothing
+ * 
+ * optInTeethOffset:(From 1 to 100000)
+ *    Forward offset applied to the teeth line
+ * 
+ * optInLipsPeriod:(From 1 to 100000)
+ *    Number of periods for the lips smoothing
+ * 
+ * optInLipsOffset:(From 1 to 100000)
+ *    Forward offset applied to the lips line
+ * 
+ * 
+ */
+TA_LIB_API TA_RetCode TA_ALLIGATOR( int    startIdx,
+                                    int    endIdx,
+                                               const double inHigh[],
+                                               const double inLow[],
+                                               int           optInJawPeriod, /* From 1 to 100000 */
+                                               int           optInJawOffset, /* From 1 to 100000 */
+                                               int           optInTeethPeriod, /* From 1 to 100000 */
+                                               int           optInTeethOffset, /* From 1 to 100000 */
+                                               int           optInLipsPeriod, /* From 1 to 100000 */
+                                               int           optInLipsOffset, /* From 1 to 100000 */
+                                               int          *outBegIdx,
+                                               int          *outNBElement,
+                                               double        outJaw[],
+                                               double        outTeeth[],
+                                               double        outLips[] );
+
+TA_LIB_API TA_RetCode TA_S_ALLIGATOR( int    startIdx,
+                                      int    endIdx,
+                                                 const float  inHigh[],
+                                                 const float  inLow[],
+                                                 int           optInJawPeriod, /* From 1 to 100000 */
+                                                 int           optInJawOffset, /* From 1 to 100000 */
+                                                 int           optInTeethPeriod, /* From 1 to 100000 */
+                                                 int           optInTeethOffset, /* From 1 to 100000 */
+                                                 int           optInLipsPeriod, /* From 1 to 100000 */
+                                                 int           optInLipsOffset, /* From 1 to 100000 */
+                                                 int          *outBegIdx,
+                                                 int          *outNBElement,
+                                                 double        outJaw[],
+                                                 double        outTeeth[],
+                                                 double        outLips[] );
+
+TA_LIB_API int TA_ALLIGATOR_Lookback( int           optInJawPeriod, /* From 1 to 100000 */
+                                               int           optInJawOffset, /* From 1 to 100000 */
+                                               int           optInTeethPeriod, /* From 1 to 100000 */
+                                               int           optInTeethOffset, /* From 1 to 100000 */
+                                               int           optInLipsPeriod, /* From 1 to 100000 */
+                                               int           optInLipsOffset );  /* From 1 to 100000 */
+
+
+/*
  * TA_APO - Absolute Price Oscillator
  * 
  * Input  = double

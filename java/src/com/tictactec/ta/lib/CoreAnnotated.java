@@ -484,6 +484,181 @@ public RetCode adxr(
 ); }
 
 
+public int alligatorLookback(
+        int optInJawPeriod,
+        int optInJawOffset,
+        int optInTeethPeriod,
+        int optInTeethOffset,
+        int optInLipsPeriod,
+        int optInLipsOffset) {
+    return super.alligatorLookback(
+        optInJawPeriod,
+        optInJawOffset,
+        optInTeethPeriod,
+        optInTeethOffset,
+        optInLipsPeriod,
+        optInLipsOffset); }
+
+@FuncInfo(
+        name  = "ALLIGATOR",
+        group = "Overlap Studies",
+        flags = 16777216,
+        nbInput    = 1,
+        nbOptInput = 6,
+        nbOutput   = 3
+)
+public RetCode alligator(
+            int startIdx,
+            int endIdx,
+            @InputParameterInfo(
+                paramName = "inPriceHL",
+                flags     = 6,
+                type = InputParameterType.TA_Input_Price
+            )
+            double inHigh [],
+            double inLow [],
+            @OptInputParameterInfo(
+                paramName    = "optInJawPeriod",
+                displayName  = "Jaw Period",
+                flags        = 0,
+                type    = OptInputParameterType.TA_OptInput_IntegerRange,
+                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerRange.class
+            )
+            @IntegerRange(
+                    paramName    = "optInJawPeriod",
+                    defaultValue = 13,
+                    min          = 1,
+                    max          = 100000,
+                    suggested_start     = 1,
+                    suggested_end       = 200,
+                    suggested_increment = 1
+            )
+            int optInJawPeriod,
+            @OptInputParameterInfo(
+                paramName    = "optInJawOffset",
+                displayName  = "Jaw Offset",
+                flags        = 0,
+                type    = OptInputParameterType.TA_OptInput_IntegerRange,
+                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerRange.class
+            )
+            @IntegerRange(
+                    paramName    = "optInJawOffset",
+                    defaultValue = 8,
+                    min          = 1,
+                    max          = 100000,
+                    suggested_start     = 1,
+                    suggested_end       = 200,
+                    suggested_increment = 1
+            )
+            int optInJawOffset,
+            @OptInputParameterInfo(
+                paramName    = "optInTeethPeriod",
+                displayName  = "Teeth Period",
+                flags        = 0,
+                type    = OptInputParameterType.TA_OptInput_IntegerRange,
+                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerRange.class
+            )
+            @IntegerRange(
+                    paramName    = "optInTeethPeriod",
+                    defaultValue = 8,
+                    min          = 1,
+                    max          = 100000,
+                    suggested_start     = 1,
+                    suggested_end       = 200,
+                    suggested_increment = 1
+            )
+            int optInTeethPeriod,
+            @OptInputParameterInfo(
+                paramName    = "optInTeethOffset",
+                displayName  = "Teeth Offset",
+                flags        = 0,
+                type    = OptInputParameterType.TA_OptInput_IntegerRange,
+                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerRange.class
+            )
+            @IntegerRange(
+                    paramName    = "optInTeethOffset",
+                    defaultValue = 5,
+                    min          = 1,
+                    max          = 100000,
+                    suggested_start     = 1,
+                    suggested_end       = 200,
+                    suggested_increment = 1
+            )
+            int optInTeethOffset,
+            @OptInputParameterInfo(
+                paramName    = "optInLipsPeriod",
+                displayName  = "Lips Period",
+                flags        = 0,
+                type    = OptInputParameterType.TA_OptInput_IntegerRange,
+                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerRange.class
+            )
+            @IntegerRange(
+                    paramName    = "optInLipsPeriod",
+                    defaultValue = 5,
+                    min          = 1,
+                    max          = 100000,
+                    suggested_start     = 1,
+                    suggested_end       = 200,
+                    suggested_increment = 1
+            )
+            int optInLipsPeriod,
+            @OptInputParameterInfo(
+                paramName    = "optInLipsOffset",
+                displayName  = "Lips Offset",
+                flags        = 0,
+                type    = OptInputParameterType.TA_OptInput_IntegerRange,
+                dataSet = com.tictactec.ta.lib.meta.annotation.IntegerRange.class
+            )
+            @IntegerRange(
+                    paramName    = "optInLipsOffset",
+                    defaultValue = 3,
+                    min          = 1,
+                    max          = 100000,
+                    suggested_start     = 1,
+                    suggested_end       = 200,
+                    suggested_increment = 1
+            )
+            int optInLipsOffset,
+            MInteger     outBegIdx,
+            MInteger     outNBElement,
+            @OutputParameterInfo(
+                paramName = "outJaw",
+                flags     = 1,
+                type = OutputParameterType.TA_Output_Real
+            )
+            double outJaw[],
+            @OutputParameterInfo(
+                paramName = "outTeeth",
+                flags     = 1,
+                type = OutputParameterType.TA_Output_Real
+            )
+            double outTeeth[],
+            @OutputParameterInfo(
+                paramName = "outLips",
+                flags     = 1,
+                type = OutputParameterType.TA_Output_Real
+            )
+            double outLips[]
+) {
+    return super.alligator (
+        startIdx,
+        endIdx,
+        inHigh ,
+        inLow ,
+        optInJawPeriod,
+        optInJawOffset,
+        optInTeethPeriod,
+        optInTeethOffset,
+        optInLipsPeriod,
+        optInLipsOffset,
+        outBegIdx,
+        outNBElement,
+        outJaw,
+        outTeeth,
+        outLips
+); }
+
+
 public int apoLookback(
         int optInFastPeriod,
         int optInSlowPeriod,

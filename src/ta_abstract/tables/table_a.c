@@ -229,6 +229,134 @@ DEF_FUNCTION( ADXR,                         /* name */
              );
 /* ADXR END */
 
+/* ALLIGATOR BEGIN */
+
+const TA_OutputParameterInfo TA_DEF_UI_Output_Real_AlligatorJaw =
+                     { TA_Output_Real, "outJaw", TA_OUT_LINE };
+
+const TA_OutputParameterInfo TA_DEF_UI_Output_Real_AlligatorTeeth =
+                     { TA_Output_Real, "outTeeth", TA_OUT_LINE };
+
+const TA_OutputParameterInfo TA_DEF_UI_Output_Real_AlligatorLips =
+                     { TA_Output_Real, "outLips", TA_OUT_LINE };
+
+static const TA_OptInputParameterInfo TA_DEF_UI_Alligator_JawPeriod =
+{
+  TA_OptInput_IntegerRange, /* type */
+  "optInJawPeriod",         /* paramName */
+  0,                         /* flags */
+
+  "Jaw Period",             /* displayName */
+  (const void *)&TA_DEF_TimePeriod_Positive, /* dataSet */
+  13, /* defaultValue */
+  "Number of periods for the jaw smoothing", /* hint */
+
+  NULL /* CamelCase name */
+};
+
+static const TA_OptInputParameterInfo TA_DEF_UI_Alligator_JawOffset =
+{
+  TA_OptInput_IntegerRange, /* type */
+  "optInJawOffset",         /* paramName */
+  0,                         /* flags */
+
+  "Jaw Offset",             /* displayName */
+  (const void *)&TA_DEF_TimePeriod_Positive, /* dataSet */
+  8, /* defaultValue */
+  "Forward offset applied to the jaw line", /* hint */
+
+  NULL /* CamelCase name */
+};
+
+static const TA_OptInputParameterInfo TA_DEF_UI_Alligator_TeethPeriod =
+{
+  TA_OptInput_IntegerRange, /* type */
+  "optInTeethPeriod",       /* paramName */
+  0,                         /* flags */
+
+  "Teeth Period",           /* displayName */
+  (const void *)&TA_DEF_TimePeriod_Positive, /* dataSet */
+  8, /* defaultValue */
+  "Number of periods for the teeth smoothing", /* hint */
+
+  NULL /* CamelCase name */
+};
+
+static const TA_OptInputParameterInfo TA_DEF_UI_Alligator_TeethOffset =
+{
+  TA_OptInput_IntegerRange, /* type */
+  "optInTeethOffset",       /* paramName */
+  0,                         /* flags */
+
+  "Teeth Offset",           /* displayName */
+  (const void *)&TA_DEF_TimePeriod_Positive, /* dataSet */
+  5, /* defaultValue */
+  "Forward offset applied to the teeth line", /* hint */
+
+  NULL /* CamelCase name */
+};
+
+static const TA_OptInputParameterInfo TA_DEF_UI_Alligator_LipsPeriod =
+{
+  TA_OptInput_IntegerRange, /* type */
+  "optInLipsPeriod",        /* paramName */
+  0,                         /* flags */
+
+  "Lips Period",            /* displayName */
+  (const void *)&TA_DEF_TimePeriod_Positive, /* dataSet */
+  5, /* defaultValue */
+  "Number of periods for the lips smoothing", /* hint */
+
+  NULL /* CamelCase name */
+};
+
+static const TA_OptInputParameterInfo TA_DEF_UI_Alligator_LipsOffset =
+{
+  TA_OptInput_IntegerRange, /* type */
+  "optInLipsOffset",        /* paramName */
+  0,                         /* flags */
+
+  "Lips Offset",            /* displayName */
+  (const void *)&TA_DEF_TimePeriod_Positive, /* dataSet */
+  3, /* defaultValue */
+  "Forward offset applied to the lips line", /* hint */
+
+  NULL /* CamelCase name */
+};
+
+static const TA_InputParameterInfo    *TA_ALLIGATOR_Inputs[]    =
+{
+  &TA_DEF_UI_Input_Price_HL,
+  NULL
+};
+
+static const TA_OutputParameterInfo   *TA_ALLIGATOR_Outputs[]   =
+{
+  &TA_DEF_UI_Output_Real_AlligatorJaw,
+  &TA_DEF_UI_Output_Real_AlligatorTeeth,
+  &TA_DEF_UI_Output_Real_AlligatorLips,
+  NULL
+};
+
+static const TA_OptInputParameterInfo *TA_ALLIGATOR_OptInputs[] =
+{
+  &TA_DEF_UI_Alligator_JawPeriod,
+  &TA_DEF_UI_Alligator_JawOffset,
+  &TA_DEF_UI_Alligator_TeethPeriod,
+  &TA_DEF_UI_Alligator_TeethOffset,
+  &TA_DEF_UI_Alligator_LipsPeriod,
+  &TA_DEF_UI_Alligator_LipsOffset,
+  NULL
+};
+
+DEF_FUNCTION( ALLIGATOR,                  /* name */
+          TA_GroupId_OverlapStudies,  /* groupId */
+          "Williams Alligator",      /* hint */
+          "Alligator",               /* CamelCase name */
+          TA_FUNC_FLG_OVERLAP         /* flags */
+         );
+/* ALLIGATOR END */
+
 /* APO BEGIN */
 static const TA_InputParameterInfo *TA_APO_Inputs[] =
 {
@@ -417,6 +545,7 @@ const TA_FuncDef *TA_DEF_TableA[] =
    ADD_TO_TABLE(ADOSC),
    ADD_TO_TABLE(ADX),
    ADD_TO_TABLE(ADXR),
+  ADD_TO_TABLE(ALLIGATOR),
    ADD_TO_TABLE(APO),
    ADD_TO_TABLE(AROON),
    ADD_TO_TABLE(AROONOSC),

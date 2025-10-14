@@ -316,6 +316,131 @@
 	</FinancialFunction>
 
 
+	<!-- ALLIGATOR -->
+	<FinancialFunction>
+		<Abbreviation>ALLIGATOR</Abbreviation>
+		<CamelCaseName>Alligator</CamelCaseName>
+		<ShortDescription>Williams Alligator</ShortDescription>
+		<GroupId>Overlap Studies</GroupId>
+		<Flags>
+			<Flag>Overlap</Flag>
+		</Flags>
+		<RequiredInputArguments>
+			<RequiredInputArgument>
+				<Type>High</Type>
+				<Name>High</Name>
+			</RequiredInputArgument>
+			<RequiredInputArgument>
+				<Type>Low</Type>
+				<Name>Low</Name>
+			</RequiredInputArgument>
+		</RequiredInputArguments>
+		<OptionalInputArguments>
+			<OptionalInputArgument>
+				<Name>Jaw Period</Name>
+				<ShortDescription>Number of periods for the jaw smoothing</ShortDescription>
+				<Type>Integer</Type>
+				<Range>
+					<Minimum>1</Minimum>
+					<Maximum>100000</Maximum>
+					<SuggestedStart>100000</SuggestedStart>
+					<SuggestedEnd>100000</SuggestedEnd>
+					<SuggestedIncrement>100000</SuggestedIncrement>
+				</Range>
+				<DefaultValue>13</DefaultValue>
+			</OptionalInputArgument>
+			<OptionalInputArgument>
+				<Name>Jaw Offset</Name>
+				<ShortDescription>Forward offset applied to the jaw line</ShortDescription>
+				<Type>Integer</Type>
+				<Range>
+					<Minimum>1</Minimum>
+					<Maximum>100000</Maximum>
+					<SuggestedStart>100000</SuggestedStart>
+					<SuggestedEnd>100000</SuggestedEnd>
+					<SuggestedIncrement>100000</SuggestedIncrement>
+				</Range>
+				<DefaultValue>8</DefaultValue>
+			</OptionalInputArgument>
+			<OptionalInputArgument>
+				<Name>Teeth Period</Name>
+				<ShortDescription>Number of periods for the teeth smoothing</ShortDescription>
+				<Type>Integer</Type>
+				<Range>
+					<Minimum>1</Minimum>
+					<Maximum>100000</Maximum>
+					<SuggestedStart>100000</SuggestedStart>
+					<SuggestedEnd>100000</SuggestedEnd>
+					<SuggestedIncrement>100000</SuggestedIncrement>
+				</Range>
+				<DefaultValue>8</DefaultValue>
+			</OptionalInputArgument>
+			<OptionalInputArgument>
+				<Name>Teeth Offset</Name>
+				<ShortDescription>Forward offset applied to the teeth line</ShortDescription>
+				<Type>Integer</Type>
+				<Range>
+					<Minimum>1</Minimum>
+					<Maximum>100000</Maximum>
+					<SuggestedStart>100000</SuggestedStart>
+					<SuggestedEnd>100000</SuggestedEnd>
+					<SuggestedIncrement>100000</SuggestedIncrement>
+				</Range>
+				<DefaultValue>5</DefaultValue>
+			</OptionalInputArgument>
+			<OptionalInputArgument>
+				<Name>Lips Period</Name>
+				<ShortDescription>Number of periods for the lips smoothing</ShortDescription>
+				<Type>Integer</Type>
+				<Range>
+					<Minimum>1</Minimum>
+					<Maximum>100000</Maximum>
+					<SuggestedStart>100000</SuggestedStart>
+					<SuggestedEnd>100000</SuggestedEnd>
+					<SuggestedIncrement>100000</SuggestedIncrement>
+				</Range>
+				<DefaultValue>5</DefaultValue>
+			</OptionalInputArgument>
+			<OptionalInputArgument>
+				<Name>Lips Offset</Name>
+				<ShortDescription>Forward offset applied to the lips line</ShortDescription>
+				<Type>Integer</Type>
+				<Range>
+					<Minimum>1</Minimum>
+					<Maximum>100000</Maximum>
+					<SuggestedStart>100000</SuggestedStart>
+					<SuggestedEnd>100000</SuggestedEnd>
+					<SuggestedIncrement>100000</SuggestedIncrement>
+				</Range>
+				<DefaultValue>3</DefaultValue>
+			</OptionalInputArgument>
+		</OptionalInputArguments>
+		<OutputArguments>
+			<OutputArgument>
+				<Type>Double Array</Type>
+				<Name>outJaw</Name>
+				<Flags>
+					<Flag>Line</Flag>
+				</Flags>
+			</OutputArgument>
+			<OutputArgument>
+				<Type>Double Array</Type>
+				<Name>outTeeth</Name>
+				<Flags>
+					<Flag>Line</Flag>
+				</Flags>
+			</OutputArgument>
+			<OutputArgument>
+				<Type>Double Array</Type>
+				<Name>outLips</Name>
+				<Flags>
+					<Flag>Line</Flag>
+				</Flags>
+			</OutputArgument>
+		</OutputArguments>
+	</FinancialFunction>
+
+
 	<!-- APO -->
 	<FinancialFunction>
 		<Abbreviation>APO</Abbreviation>

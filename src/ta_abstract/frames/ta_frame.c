@@ -206,6 +206,38 @@
 /* Generated */ {
 /* Generated */    return TA_ADXR_Lookback(params->optIn[0].data.optInInteger /* optInTimePeriod*/ );
 /* Generated */ }
+/* Generated */ TA_RetCode TA_ALLIGATOR_FramePP( const TA_ParamHolderPriv *params,
+/* Generated */                           int            startIdx,
+/* Generated */                           int            endIdx,
+/* Generated */                           int           *outBegIdx,
+/* Generated */                           int           *outNBElement )
+/* Generated */ {
+/* Generated */    return TA_ALLIGATOR(
+/* Generated */                   startIdx,
+/* Generated */                   endIdx,
+/* Generated */                   params->in[0].data.inPrice.high, /* inHigh */
+/* Generated */                   params->in[0].data.inPrice.low, /* inLow */
+/* Generated */                   params->optIn[0].data.optInInteger, /* optInJawPeriod*/
+/* Generated */                   params->optIn[1].data.optInInteger, /* optInJawOffset*/
+/* Generated */                   params->optIn[2].data.optInInteger, /* optInTeethPeriod*/
+/* Generated */                   params->optIn[3].data.optInInteger, /* optInTeethOffset*/
+/* Generated */                   params->optIn[4].data.optInInteger, /* optInLipsPeriod*/
+/* Generated */                   params->optIn[5].data.optInInteger, /* optInLipsOffset*/
+/* Generated */                   outBegIdx, 
+/* Generated */                   outNBElement, 
+/* Generated */                   params->out[0].data.outReal, /*  outJaw */
+/* Generated */                   params->out[1].data.outReal, /*  outTeeth */
+/* Generated */                   params->out[2].data.outReal /*  outLips */ );
+/* Generated */ }
+/* Generated */ unsigned int TA_ALLIGATOR_FramePPLB( const TA_ParamHolderPriv *params )
+/* Generated */ {
+/* Generated */    return TA_ALLIGATOR_Lookback(params->optIn[0].data.optInInteger, /* optInJawPeriod*/
+/* Generated */                           params->optIn[1].data.optInInteger, /* optInJawOffset*/
+/* Generated */                           params->optIn[2].data.optInInteger, /* optInTeethPeriod*/
+/* Generated */                           params->optIn[3].data.optInInteger, /* optInTeethOffset*/
+/* Generated */                           params->optIn[4].data.optInInteger, /* optInLipsPeriod*/
+/* Generated */                           params->optIn[5].data.optInInteger /* optInLipsOffset*/ );
+/* Generated */ }
 /* Generated */ TA_RetCode TA_APO_FramePP( const TA_ParamHolderPriv *params,
 /* Generated */                           int            startIdx,
 /* Generated */                           int            endIdx,

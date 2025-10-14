@@ -207,6 +207,58 @@ int TA_ADXR_Lookback( int           optInTimePeriod );  /* From 2 to 100000 */
 
 
 /*
+ * TA_ALLIGATOR - Williams Alligator
+ * 
+ * Input  = High, Low
+ * Output = double, double, double
+ * 
+ * Optional Parameters
+ * -------------------
+ * optInJawPeriod:(From 1 to 100000)
+ *    Number of periods for the jaw smoothing
+ * 
+ * optInJawOffset:(From 1 to 100000)
+ *    Forward offset applied to the jaw line
+ * 
+ * optInTeethPeriod:(From 1 to 100000)
+ *    Number of periods for the teeth smoothing
+ * 
+ * optInTeethOffset:(From 1 to 100000)
+ *    Forward offset applied to the teeth line
+ * 
+ * optInLipsPeriod:(From 1 to 100000)
+ *    Number of periods for the lips smoothing
+ * 
+ * optInLipsOffset:(From 1 to 100000)
+ *    Forward offset applied to the lips line
+ * 
+ * 
+ */
+TA_RetCode TA_ALLIGATOR( int           START_IDX,
+                         int           END_IDX,
+                         const double *IN_ARRAY /* inHigh */,
+                         const double *IN_ARRAY /* inLow */,
+                         int           OPT_INT /* optInJawPeriod */, /* From 1 to 100000 */
+                         int           OPT_INT /* optInJawOffset */, /* From 1 to 100000 */
+                         int           OPT_INT /* optInTeethPeriod */, /* From 1 to 100000 */
+                         int           OPT_INT /* optInTeethOffset */, /* From 1 to 100000 */
+                         int           OPT_INT /* optInLipsPeriod */, /* From 1 to 100000 */
+                         int           OPT_INT /* optInLipsOffset */, /* From 1 to 100000 */
+                         int          *BEG_IDX,
+                         int          *OUT_SIZE,
+                         double       *OUT_ARRAY /* outJaw */,
+                         double       *OUT_ARRAY /* outTeeth */,
+                         double       *OUT_ARRAY /* outLips */ );
+
+int TA_ALLIGATOR_Lookback( int           optInJawPeriod, /* From 1 to 100000 */
+                         int           optInJawOffset, /* From 1 to 100000 */
+                         int           optInTeethPeriod, /* From 1 to 100000 */
+                         int           optInTeethOffset, /* From 1 to 100000 */
+                         int           optInLipsPeriod, /* From 1 to 100000 */
+                         int           optInLipsOffset );  /* From 1 to 100000 */
+
+
+/*
  * TA_APO - Absolute Price Oscillator
  * 
  * Input  = double

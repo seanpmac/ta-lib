@@ -52,6 +52,8 @@
 #define TA_ADX adx
 #define TA_ADXR_Lookback adxrLookback
 #define TA_ADXR adxr
+#define TA_ALLIGATOR_Lookback alligatorLookback
+#define TA_ALLIGATOR alligator
 #define TA_APO_Lookback apoLookback
 #define TA_APO apo
 #define TA_AROON_Lookback aroonLookback

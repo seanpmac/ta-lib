@@ -1171,6 +1171,256 @@ public class Core {
       return RetCode.Success ;
    }
    /* Generated */
+   public int alligatorLookback( int optInJawPeriod,
+      int optInJawOffset,
+      int optInTeethPeriod,
+      int optInTeethOffset,
+      int optInLipsPeriod,
+      int optInLipsOffset )
+   {
+      int jawSpan, teethSpan, lipsSpan;
+      if( (int)optInJawPeriod == ( Integer.MIN_VALUE ) )
+         optInJawPeriod = 13;
+      else if( ((int)optInJawPeriod < 1) || ((int)optInJawPeriod > 100000) )
+         return -1;
+      if( (int)optInJawOffset == ( Integer.MIN_VALUE ) )
+         optInJawOffset = 8;
+      else if( ((int)optInJawOffset < 1) || ((int)optInJawOffset > 100000) )
+         return -1;
+      if( (int)optInTeethPeriod == ( Integer.MIN_VALUE ) )
+         optInTeethPeriod = 8;
+      else if( ((int)optInTeethPeriod < 1) || ((int)optInTeethPeriod > 100000) )
+         return -1;
+      if( (int)optInTeethOffset == ( Integer.MIN_VALUE ) )
+         optInTeethOffset = 5;
+      else if( ((int)optInTeethOffset < 1) || ((int)optInTeethOffset > 100000) )
+         return -1;
+      if( (int)optInLipsPeriod == ( Integer.MIN_VALUE ) )
+         optInLipsPeriod = 5;
+      else if( ((int)optInLipsPeriod < 1) || ((int)optInLipsPeriod > 100000) )
+         return -1;
+      if( (int)optInLipsOffset == ( Integer.MIN_VALUE ) )
+         optInLipsOffset = 3;
+      else if( ((int)optInLipsOffset < 1) || ((int)optInLipsOffset > 100000) )
+         return -1;
+      jawSpan = optInJawPeriod + optInJawOffset - 1;
+      teethSpan = optInTeethPeriod + optInTeethOffset - 1;
+      lipsSpan = optInLipsPeriod + optInLipsOffset - 1;
+      if( teethSpan > jawSpan )
+         jawSpan = teethSpan;
+      if( lipsSpan > jawSpan )
+         jawSpan = lipsSpan;
+      return jawSpan;
+   }
+   public RetCode alligator( int startIdx,
+      int endIdx,
+      double inHigh[],
+      double inLow[],
+      int optInJawPeriod,
+      int optInJawOffset,
+      int optInTeethPeriod,
+      int optInTeethOffset,
+      int optInLipsPeriod,
+      int optInLipsOffset,
+      MInteger outBegIdx,
+      MInteger outNBElement,
+      double outJaw[],
+      double outTeeth[],
+      double outLips[] )
+   {
+      int jawSpan, teethSpan, lipsSpan;
+      int lookbackTotal, firstCalcIdx;
+      int today, outIdx;
+      double jawPrev = 0.0, teethPrev = 0.0, lipsPrev = 0.0;
+      int jawInitialized = 0, teethInitialized = 0, lipsInitialized = 0;
+      if( startIdx < 0 )
+         return RetCode.OutOfRangeStartIndex ;
+      if( (endIdx < 0) || (endIdx < startIdx))
+         return RetCode.OutOfRangeEndIndex ;
+      if( (int)optInJawPeriod == ( Integer.MIN_VALUE ) )
+         optInJawPeriod = 13;
+      else if( ((int)optInJawPeriod < 1) || ((int)optInJawPeriod > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInJawOffset == ( Integer.MIN_VALUE ) )
+         optInJawOffset = 8;
+      else if( ((int)optInJawOffset < 1) || ((int)optInJawOffset > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInTeethPeriod == ( Integer.MIN_VALUE ) )
+         optInTeethPeriod = 8;
+      else if( ((int)optInTeethPeriod < 1) || ((int)optInTeethPeriod > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInTeethOffset == ( Integer.MIN_VALUE ) )
+         optInTeethOffset = 5;
+      else if( ((int)optInTeethOffset < 1) || ((int)optInTeethOffset > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInLipsPeriod == ( Integer.MIN_VALUE ) )
+         optInLipsPeriod = 5;
+      else if( ((int)optInLipsPeriod < 1) || ((int)optInLipsPeriod > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInLipsOffset == ( Integer.MIN_VALUE ) )
+         optInLipsOffset = 3;
+      else if( ((int)optInLipsOffset < 1) || ((int)optInLipsOffset > 100000) )
+         return RetCode.BadParam ;
+      jawSpan = optInJawPeriod + optInJawOffset - 1;
+      teethSpan = optInTeethPeriod + optInTeethOffset - 1;
+      lipsSpan = optInLipsPeriod + optInLipsOffset - 1;
+      lookbackTotal = jawSpan;
+      if( teethSpan > lookbackTotal )
+         lookbackTotal = teethSpan;
+      if( lipsSpan > lookbackTotal )
+         lookbackTotal = lipsSpan;
+      firstCalcIdx = jawSpan;
+      if( teethSpan < firstCalcIdx )
+         firstCalcIdx = teethSpan;
+      if( lipsSpan < firstCalcIdx )
+         firstCalcIdx = lipsSpan;
+      if( startIdx < lookbackTotal )
+         startIdx = lookbackTotal;
+      if( startIdx > endIdx )
+      {
+         outBegIdx.value = 0 ;
+         outNBElement.value = 0 ;
+         return RetCode.Success ;
+      }
+      if( firstCalcIdx < startIdx )
+      {
+         for( today = firstCalcIdx; today < startIdx; ++today )
+         {
+            double tmpJaw = (-4e+37) ;
+            double tmpTeeth = (-4e+37) ;
+            double tmpLips = (-4e+37) ;
+            do { if( today >= (jawSpan) ) { if( !(jawInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInJawOffset) - (optInJawPeriod) + 1; int end_ = today - (optInJawOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; tmpJaw = sum_ / (double)(optInJawPeriod); jawInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInJawOffset)]) + ((double)inLow[today - (optInJawOffset)])) * 0.5; tmpJaw = ((jawPrev * ((double)(optInJawPeriod) - 1.0)) + input_) / (double)(optInJawPeriod); } jawPrev = tmpJaw; } } while(0) ;
+            do { if( today >= (teethSpan) ) { if( !(teethInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInTeethOffset) - (optInTeethPeriod) + 1; int end_ = today - (optInTeethOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; tmpTeeth = sum_ / (double)(optInTeethPeriod); teethInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInTeethOffset)]) + ((double)inLow[today - (optInTeethOffset)])) * 0.5; tmpTeeth = ((teethPrev * ((double)(optInTeethPeriod) - 1.0)) + input_) / (double)(optInTeethPeriod); } teethPrev = tmpTeeth; } } while(0) ;
+            do { if( today >= (lipsSpan) ) { if( !(lipsInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInLipsOffset) - (optInLipsPeriod) + 1; int end_ = today - (optInLipsOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; tmpLips = sum_ / (double)(optInLipsPeriod); lipsInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInLipsOffset)]) + ((double)inLow[today - (optInLipsOffset)])) * 0.5; tmpLips = ((lipsPrev * ((double)(optInLipsPeriod) - 1.0)) + input_) / (double)(optInLipsPeriod); } lipsPrev = tmpLips; } } while(0) ;
+         }
+      }
+      outIdx = 0;
+      for( today = startIdx; today <= endIdx; ++today )
+      {
+         double jawValue = (-4e+37) ;
+         double teethValue = (-4e+37) ;
+         double lipsValue = (-4e+37) ;
+         do { if( today >= (jawSpan) ) { if( !(jawInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInJawOffset) - (optInJawPeriod) + 1; int end_ = today - (optInJawOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; jawValue = sum_ / (double)(optInJawPeriod); jawInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInJawOffset)]) + ((double)inLow[today - (optInJawOffset)])) * 0.5; jawValue = ((jawPrev * ((double)(optInJawPeriod) - 1.0)) + input_) / (double)(optInJawPeriod); } jawPrev = jawValue; } else { jawValue = (-4e+37) ; } } while(0) ;
+         do { if( today >= (teethSpan) ) { if( !(teethInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInTeethOffset) - (optInTeethPeriod) + 1; int end_ = today - (optInTeethOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; teethValue = sum_ / (double)(optInTeethPeriod); teethInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInTeethOffset)]) + ((double)inLow[today - (optInTeethOffset)])) * 0.5; teethValue = ((teethPrev * ((double)(optInTeethPeriod) - 1.0)) + input_) / (double)(optInTeethPeriod); } teethPrev = teethValue; } else { teethValue = (-4e+37) ; } } while(0) ;
+         do { if( today >= (lipsSpan) ) { if( !(lipsInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInLipsOffset) - (optInLipsPeriod) + 1; int end_ = today - (optInLipsOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; lipsValue = sum_ / (double)(optInLipsPeriod); lipsInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInLipsOffset)]) + ((double)inLow[today - (optInLipsOffset)])) * 0.5; lipsValue = ((lipsPrev * ((double)(optInLipsPeriod) - 1.0)) + input_) / (double)(optInLipsPeriod); } lipsPrev = lipsValue; } else { lipsValue = (-4e+37) ; } } while(0) ;
+         outJaw[outIdx] = jawValue;
+         outTeeth[outIdx] = teethValue;
+         outLips[outIdx] = lipsValue;
+         outIdx++;
+      }
+      outBegIdx.value = startIdx;
+      outNBElement.value = outIdx;
+      return RetCode.Success ;
+   }
+   public RetCode alligator( int startIdx,
+      int endIdx,
+      float inHigh[],
+      float inLow[],
+      int optInJawPeriod,
+      int optInJawOffset,
+      int optInTeethPeriod,
+      int optInTeethOffset,
+      int optInLipsPeriod,
+      int optInLipsOffset,
+      MInteger outBegIdx,
+      MInteger outNBElement,
+      double outJaw[],
+      double outTeeth[],
+      double outLips[] )
+   {
+      int jawSpan, teethSpan, lipsSpan;
+      int lookbackTotal, firstCalcIdx;
+      int today, outIdx;
+      double jawPrev = 0.0, teethPrev = 0.0, lipsPrev = 0.0;
+      int jawInitialized = 0, teethInitialized = 0, lipsInitialized = 0;
+      if( startIdx < 0 )
+         return RetCode.OutOfRangeStartIndex ;
+      if( (endIdx < 0) || (endIdx < startIdx))
+         return RetCode.OutOfRangeEndIndex ;
+      if( (int)optInJawPeriod == ( Integer.MIN_VALUE ) )
+         optInJawPeriod = 13;
+      else if( ((int)optInJawPeriod < 1) || ((int)optInJawPeriod > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInJawOffset == ( Integer.MIN_VALUE ) )
+         optInJawOffset = 8;
+      else if( ((int)optInJawOffset < 1) || ((int)optInJawOffset > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInTeethPeriod == ( Integer.MIN_VALUE ) )
+         optInTeethPeriod = 8;
+      else if( ((int)optInTeethPeriod < 1) || ((int)optInTeethPeriod > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInTeethOffset == ( Integer.MIN_VALUE ) )
+         optInTeethOffset = 5;
+      else if( ((int)optInTeethOffset < 1) || ((int)optInTeethOffset > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInLipsPeriod == ( Integer.MIN_VALUE ) )
+         optInLipsPeriod = 5;
+      else if( ((int)optInLipsPeriod < 1) || ((int)optInLipsPeriod > 100000) )
+         return RetCode.BadParam ;
+      if( (int)optInLipsOffset == ( Integer.MIN_VALUE ) )
+         optInLipsOffset = 3;
+      else if( ((int)optInLipsOffset < 1) || ((int)optInLipsOffset > 100000) )
+         return RetCode.BadParam ;
+      if( optInJawPeriod <= optInTeethPeriod )
+         return RetCode.BadParam ;
+      if( optInTeethPeriod <= optInLipsPeriod )
+         return RetCode.BadParam ;
+      if( (optInJawPeriod + optInJawOffset) <= (optInTeethPeriod + optInTeethOffset) )
+         return RetCode.BadParam ;
+      if( (optInTeethPeriod + optInTeethOffset) <= (optInLipsPeriod + optInLipsOffset) )
+         return RetCode.BadParam ;
+      jawSpan = optInJawPeriod + optInJawOffset - 1;
+      teethSpan = optInTeethPeriod + optInTeethOffset - 1;
+      lipsSpan = optInLipsPeriod + optInLipsOffset - 1;
+      lookbackTotal = jawSpan;
+      if( teethSpan > lookbackTotal )
+         lookbackTotal = teethSpan;
+      if( lipsSpan > lookbackTotal )
+         lookbackTotal = lipsSpan;
+      firstCalcIdx = jawSpan;
+      if( teethSpan < firstCalcIdx )
+         firstCalcIdx = teethSpan;
+      if( lipsSpan < firstCalcIdx )
+         firstCalcIdx = lipsSpan;
+      if( startIdx < lookbackTotal )
+         startIdx = lookbackTotal;
+      if( startIdx > endIdx )
+      {
+         outBegIdx.value = 0 ;
+         outNBElement.value = 0 ;
+         return RetCode.Success ;
+      }
+      if( firstCalcIdx < startIdx )
+      {
+         for( today = firstCalcIdx; today < startIdx; ++today )
+         {
+            double tmpJaw = (-4e+37) ;
+            double tmpTeeth = (-4e+37) ;
+            double tmpLips = (-4e+37) ;
+            do { if( today >= (jawSpan) ) { if( !(jawInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInJawOffset) - (optInJawPeriod) + 1; int end_ = today - (optInJawOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; tmpJaw = sum_ / (double)(optInJawPeriod); jawInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInJawOffset)]) + ((double)inLow[today - (optInJawOffset)])) * 0.5; tmpJaw = ((jawPrev * ((double)(optInJawPeriod) - 1.0)) + input_) / (double)(optInJawPeriod); } jawPrev = tmpJaw; } } while(0) ;
+            do { if( today >= (teethSpan) ) { if( !(teethInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInTeethOffset) - (optInTeethPeriod) + 1; int end_ = today - (optInTeethOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; tmpTeeth = sum_ / (double)(optInTeethPeriod); teethInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInTeethOffset)]) + ((double)inLow[today - (optInTeethOffset)])) * 0.5; tmpTeeth = ((teethPrev * ((double)(optInTeethPeriod) - 1.0)) + input_) / (double)(optInTeethPeriod); } teethPrev = tmpTeeth; } } while(0) ;
+            do { if( today >= (lipsSpan) ) { if( !(lipsInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInLipsOffset) - (optInLipsPeriod) + 1; int end_ = today - (optInLipsOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; tmpLips = sum_ / (double)(optInLipsPeriod); lipsInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInLipsOffset)]) + ((double)inLow[today - (optInLipsOffset)])) * 0.5; tmpLips = ((lipsPrev * ((double)(optInLipsPeriod) - 1.0)) + input_) / (double)(optInLipsPeriod); } lipsPrev = tmpLips; } } while(0) ;
+         }
+      }
+      outIdx = 0;
+      for( today = startIdx; today <= endIdx; ++today )
+      {
+         double jawValue = (-4e+37) ;
+         double teethValue = (-4e+37) ;
+         double lipsValue = (-4e+37) ;
+         do { if( today >= (jawSpan) ) { if( !(jawInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInJawOffset) - (optInJawPeriod) + 1; int end_ = today - (optInJawOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; jawValue = sum_ / (double)(optInJawPeriod); jawInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInJawOffset)]) + ((double)inLow[today - (optInJawOffset)])) * 0.5; jawValue = ((jawPrev * ((double)(optInJawPeriod) - 1.0)) + input_) / (double)(optInJawPeriod); } jawPrev = jawValue; } else { jawValue = (-4e+37) ; } } while(0) ;
+         do { if( today >= (teethSpan) ) { if( !(teethInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInTeethOffset) - (optInTeethPeriod) + 1; int end_ = today - (optInTeethOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; teethValue = sum_ / (double)(optInTeethPeriod); teethInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInTeethOffset)]) + ((double)inLow[today - (optInTeethOffset)])) * 0.5; teethValue = ((teethPrev * ((double)(optInTeethPeriod) - 1.0)) + input_) / (double)(optInTeethPeriod); } teethPrev = teethValue; } else { teethValue = (-4e+37) ; } } while(0) ;
+         do { if( today >= (lipsSpan) ) { if( !(lipsInitialized) ) { double sum_ = 0.0; int idx_; int begin_ = today - (optInLipsOffset) - (optInLipsPeriod) + 1; int end_ = today - (optInLipsOffset); for( idx_ = begin_; idx_ <= end_; ++idx_ ) sum_ += (((double)inHigh[idx_]) + ((double)inLow[idx_])) * 0.5; lipsValue = sum_ / (double)(optInLipsPeriod); lipsInitialized = 1; } else { double input_ = (((double)inHigh[today - (optInLipsOffset)]) + ((double)inLow[today - (optInLipsOffset)])) * 0.5; lipsValue = ((lipsPrev * ((double)(optInLipsPeriod) - 1.0)) + input_) / (double)(optInLipsPeriod); } lipsPrev = lipsValue; } else { lipsValue = (-4e+37) ; } } while(0) ;
+         outJaw[outIdx] = jawValue;
+         outTeeth[outIdx] = teethValue;
+         outLips[outIdx] = lipsValue;
+         outIdx++;
+      }
+      outBegIdx.value = startIdx;
+      outNBElement.value = outIdx;
+      return RetCode.Success ;
+   }
+   /* Generated */
    public int apoLookback( int optInFastPeriod,
       int optInSlowPeriod,
       MAType optInMAType )
