@@ -159,11 +159,11 @@
 /* Generated */ 
 /* Generated */                                  int    endIdx,
 double inReal[],
- optInTimePeriod[],
+int optInTimePeriod[],
 mut outBegIdx,
 mut outNBElement,
- outMinIdx[],
- outMaxIdx[],
+int outMinIdx[],
+int outMaxIdx[],
 )
 /* Generated */ #else
 /* Generated */ TA_LIB_API TA_RetCode TA_MINMAXINDEX( int    startIdx,

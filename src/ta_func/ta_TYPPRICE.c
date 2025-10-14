@@ -150,7 +150,7 @@
 /* Generated */ fn typprice( int    startIdx,
 /* Generated */ 
 /* Generated */                               int    endIdx,
- inPriceHLC[],
+double inPriceHLC[],
 mut outBegIdx,
 mut outNBElement,
 double outReal[],

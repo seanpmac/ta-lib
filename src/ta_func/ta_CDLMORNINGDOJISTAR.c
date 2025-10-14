@@ -166,11 +166,11 @@
 /* Generated */ fn cdlmorningdojistar( int    startIdx,
 /* Generated */ 
 /* Generated */                                         int    endIdx,
- inPriceOHLC[],
+double inPriceOHLC[],
 double optInPenetration[],
 mut outBegIdx,
 mut outNBElement,
- outInteger[],
+int outInteger[],
 )
 /* Generated */ #else
 /* Generated */ TA_LIB_API TA_RetCode TA_CDLMORNINGDOJISTAR( int    startIdx,

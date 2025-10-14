@@ -185,8 +185,8 @@
 /* Generated */ fn mfi( int    startIdx,
 /* Generated */ 
 /* Generated */                          int    endIdx,
- inPriceHLCV[],
- optInTimePeriod[],
+double inPriceHLCV[],
+int optInTimePeriod[],
 mut outBegIdx,
 mut outNBElement,
 double outReal[],

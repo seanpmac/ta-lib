@@ -163,8 +163,8 @@
 /* Generated */ fn plus_dm( int    startIdx,
 /* Generated */ 
 /* Generated */                              int    endIdx,
- inPriceHL[],
- optInTimePeriod[],
+double inPriceHL[],
+int optInTimePeriod[],
 mut outBegIdx,
 mut outNBElement,
 double outReal[],

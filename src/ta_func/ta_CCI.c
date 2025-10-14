@@ -164,8 +164,8 @@
 /* Generated */ fn cci( int    startIdx,
 /* Generated */ 
 /* Generated */                          int    endIdx,
- inPriceHLC[],
- optInTimePeriod[],
+double inPriceHLC[],
+int optInTimePeriod[],
 mut outBegIdx,
 mut outNBElement,
 double outReal[],

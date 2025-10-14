@@ -150,10 +150,10 @@
 /* Generated */ fn cdl3starsinsouth( int    startIdx,
 /* Generated */ 
 /* Generated */                                       int    endIdx,
- inPriceOHLC[],
+double inPriceOHLC[],
 mut outBegIdx,
 mut outNBElement,
- outInteger[],
+int outInteger[],
 )
 /* Generated */ #else
 /* Generated */ TA_LIB_API TA_RetCode TA_CDL3STARSINSOUTH( int    startIdx,

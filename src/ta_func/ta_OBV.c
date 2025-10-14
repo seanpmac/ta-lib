@@ -148,7 +148,7 @@
 /* Generated */ 
 /* Generated */                          int    endIdx,
 double inReal[],
- inPriceV[],
+double inPriceV[],
 mut outBegIdx,
 mut outNBElement,
 double outReal[],

@@ -151,7 +151,7 @@
 /* Generated */ fn avgprice( int    startIdx,
 /* Generated */ 
 /* Generated */                               int    endIdx,
- inPriceOHLC[],
+double inPriceOHLC[],
 mut outBegIdx,
 mut outNBElement,
 double outReal[],
