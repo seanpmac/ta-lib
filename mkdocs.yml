@@ -80,4 +80,5 @@ nav:
       - C/C++ API: api.md
       - Wrappers: wrappers.md
       - FAQ: faq.md
+      - Recipes: recipes.md
   - About Us: about.md
