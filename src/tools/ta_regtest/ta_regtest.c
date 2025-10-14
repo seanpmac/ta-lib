@@ -97,11 +97,6 @@ static void printUsage(void);
 /**** Global functions definitions.   ****/
 int main( int argc, char **argv )
 {
-#ifdef WIN32
-	LARGE_INTEGER QPFrequency;
-#endif
-   double freq;
-
    ErrorNumber retValue;
 
    (void)argv;
@@ -169,19 +164,9 @@ int main( int argc, char **argv )
       else if( nbProfiledCall > 0 )
       {
          printf( "\nNumber profiled function call       = %d function calls", nbProfiledCall );
-
-#ifdef WIN32
-         QueryPerformanceFrequency(&QPFrequency);
-         freq = (double)QPFrequency.QuadPart;
-         printf( "\nTotal execution time                = %g milliseconds", (timeInProfiledCall/freq)*1000.0 );
-         printf( "\nWorst single function call          = %g milliseconds", (worstProfiledCall/freq)*1000.0 );
-         printf( "\nAverage execution time per function = %g microseconds\n", ((timeInProfiledCall/freq)*1000000.0)/((double)nbProfiledCall) );
-#else
-         freq = (double)CLOCKS_PER_SEC;
-         printf( "\nTotal execution time                = %g milliseconds", timeInProfiledCall/freq/1000.0 );
-         printf( "\nWorst single function call          = %g milliseconds", worstProfiledCall/freq/1000.0 );
-         printf( "\nAverage execution time per function = %g microseconds\n", (timeInProfiledCall/freq/1000000.0)/((double)nbProfiledCall) );
-#endif
+         printf( "\nTotal execution time                = %g milliseconds", timeInProfiledCall/1000.0 );
+         printf( "\nWorst single function call          = %g milliseconds", worstProfiledCall/1000.0 );
+         printf( "\nAverage execution time per function = %g microseconds\n", timeInProfiledCall/((double)nbProfiledCall) );
       }
       printf( "\n* All tests succeeded. Enjoy the library. *\n" );
    }

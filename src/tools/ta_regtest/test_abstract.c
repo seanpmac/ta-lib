@@ -62,13 +62,17 @@
 #ifdef WIN32
    #include "windows.h"
 #else
-   #include "time.h"
+   #include <time.h>
 #endif
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdint.h>
+#if defined(__APPLE__) && defined(__MACH__)
+#include <mach/mach_time.h>
+#endif
 #include "ta_test_priv.h"
 
 /**** External functions declarations. ****/
@@ -158,7 +162,7 @@ ErrorNumber test_abstract( void )
    }
 
    retValue = testLookback(paramHolder);
-   if( retValue != TA_SUCCESS )
+   if( retValue != TA_TEST_PASS )
    {
       printf( "testLookback() failed [%d]\n", retValue );
       TA_ParamHolderFree( paramHolder );
@@ -603,11 +607,34 @@ static ErrorNumber callAndProfile( const char *funcName, ProfilingType type )
 
    /* Variables measuring the execution time */
 #ifdef WIN32
+   static double qpcToMicro = 0.0;
    LARGE_INTEGER startClock;
    LARGE_INTEGER endClock;
+   if( qpcToMicro == 0.0 )
+   {
+      LARGE_INTEGER freq;
+      QueryPerformanceFrequency( &freq );
+      qpcToMicro = 1000000.0 / (double)freq.QuadPart;
+   }
+#elif defined(__APPLE__) && defined(__MACH__)
+   static double machToMicro = 0.0;
+   uint64_t startClock;
+   uint64_t endClock;
+   if( machToMicro == 0.0 )
+   {
+      mach_timebase_info_data_t timebase;
+      mach_timebase_info( &timebase );
+      machToMicro = (double)timebase.numer / ((double)timebase.denom * 1000.0);
+   }
+#elif defined(CLOCK_MONOTONIC)
+   struct timespec startClock;
+   struct timespec endClock;
 #else
+   static double clockToMicro = 0.0;
    clock_t startClock;
    clock_t endClock;
+   if( clockToMicro == 0.0 )
+      clockToMicro = 1000000.0 / (double)CLOCKS_PER_SEC;
 #endif
    double clockDelta;
    int nbProfiledCallLocal;
@@ -730,6 +757,10 @@ static ErrorNumber callAndProfile( const char *funcName, ProfilingType type )
 
            #ifdef WIN32
               QueryPerformanceCounter(&startClock);
+           #elif defined(__APPLE__) && defined(__MACH__)
+              startClock = mach_absolute_time();
+           #elif defined(CLOCK_MONOTONIC)
+              clock_gettime( CLOCK_MONOTONIC, &startClock );
            #else
               startClock = clock();
            #endif
@@ -743,27 +774,35 @@ static ErrorNumber callAndProfile( const char *funcName, ProfilingType type )
 		      return TA_ABS_TST_FAIL_CALLFUNC_1;
 		   }
 
-		   #ifdef WIN32
-			   QueryPerformanceCounter(&endClock);
-			   clockDelta = (double)((__int64)endClock.QuadPart - (__int64) startClock.QuadPart);
-		   #else
-			   endClock = clock();
-			   clockDelta = (double)(endClock - startClock);
-		   #endif
+         #ifdef WIN32
+            QueryPerformanceCounter(&endClock);
+         #elif defined(__APPLE__) && defined(__MACH__)
+            endClock = mach_absolute_time();
+         #elif defined(CLOCK_MONOTONIC)
+            clock_gettime( CLOCK_MONOTONIC, &endClock );
+         #else
+            endClock = clock();
+         #endif
 
-		   /* Setup global profiling info. */
-		   if( clockDelta <= 0 )
-		   {
-			   printf( "Error: Insufficient timer precision to perform benchmarking on this platform.\n" );
-			   return TA_ABS_TST_FAIL_CALLFUNC_1;
-		   }
-		   else
-		   {
-			   if( clockDelta > worstProfiledCall )
-			      worstProfiledCall = clockDelta;
-			   timeInProfiledCall += clockDelta;
-			   nbProfiledCall++;
-		   }
+         #ifdef WIN32
+            clockDelta = (double)((__int64)endClock.QuadPart - (__int64) startClock.QuadPart) * qpcToMicro;
+         #elif defined(__APPLE__) && defined(__MACH__)
+            clockDelta = (double)(endClock - startClock) * machToMicro;
+         #elif defined(CLOCK_MONOTONIC)
+            clockDelta = (double)(endClock.tv_sec - startClock.tv_sec) * 1000000.0;
+            clockDelta += (double)(endClock.tv_nsec - startClock.tv_nsec) / 1000.0;
+         #else
+            clockDelta = (double)(endClock - startClock) * clockToMicro;
+         #endif
+
+         /* Setup global profiling info. */
+         if( clockDelta <= 0.0 )
+            clockDelta = 1.0;
+
+         if( clockDelta > worstProfiledCall )
+            worstProfiledCall = clockDelta;
+         timeInProfiledCall += clockDelta;
+         nbProfiledCall++;
 
 		   /* Setup local profiling info for this particular function. */
 		   if( clockDelta > worstProfiledCallLocal )

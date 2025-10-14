@@ -58,7 +58,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <time.h>
+#if defined(__APPLE__) && defined(__MACH__)
+#include <mach/mach_time.h>
+#endif
 #include "ta_test_priv.h"
 #include "ta_utility.h"
 #include "ta_memory.h"
@@ -1285,15 +1289,42 @@ static TA_RetCode CallTestFunction( RangeTestFunction testFunction,
    double clockDelta;
 
 #ifdef WIN32
+   static double qpcToMicro = 0.0;
    LARGE_INTEGER startClock;
    LARGE_INTEGER endClock;
+   if( qpcToMicro == 0.0 )
+   {
+      LARGE_INTEGER freq;
+      QueryPerformanceFrequency( &freq );
+      qpcToMicro = 1000000.0 / (double)freq.QuadPart;
+   }
+#elif defined(__APPLE__) && defined(__MACH__)
+   static double machToMicro = 0.0;
+   uint64_t startClock;
+   uint64_t endClock;
+   if( machToMicro == 0.0 )
+   {
+      mach_timebase_info_data_t timebase;
+      mach_timebase_info( &timebase );
+      machToMicro = (double)timebase.numer / ((double)timebase.denom * 1000.0);
+   }
+#elif defined(CLOCK_MONOTONIC)
+   struct timespec startClock;
+   struct timespec endClock;
 #else
+   static double clockToMicro = 0.0;
    clock_t startClock;
    clock_t endClock;
+   if( clockToMicro == 0.0 )
+      clockToMicro = 1000000.0 / (double)CLOCKS_PER_SEC;
 #endif
 
 #ifdef WIN32
    QueryPerformanceCounter(&startClock);
+#elif defined(__APPLE__) && defined(__MACH__)
+   startClock = mach_absolute_time();
+#elif defined(CLOCK_MONOTONIC)
+   clock_gettime( CLOCK_MONOTONIC, &startClock );
 #else
    startClock = clock();
 #endif
@@ -1316,23 +1347,32 @@ static TA_RetCode CallTestFunction( RangeTestFunction testFunction,
 
 #ifdef WIN32
    QueryPerformanceCounter(&endClock);
-   clockDelta = (double)((__int64)endClock.QuadPart - (__int64) startClock.QuadPart);
+#elif defined(__APPLE__) && defined(__MACH__)
+   endClock = mach_absolute_time();
+#elif defined(CLOCK_MONOTONIC)
+   clock_gettime( CLOCK_MONOTONIC, &endClock );
 #else
    endClock = clock();
-   clockDelta = (double)(endClock - startClock);
 #endif
 
-   if( clockDelta <= 0 )
-   {
-	   insufficientClockPrecision = 1;
-   }
-   else
-   {
-      if( clockDelta > worstProfiledCall )
-         worstProfiledCall = clockDelta;
-      timeInProfiledCall += clockDelta;
-      nbProfiledCall++;
-   }
+#ifdef WIN32
+   clockDelta = (double)((__int64)endClock.QuadPart - (__int64) startClock.QuadPart) * qpcToMicro;
+#elif defined(__APPLE__) && defined(__MACH__)
+   clockDelta = (double)(endClock - startClock) * machToMicro;
+#elif defined(CLOCK_MONOTONIC)
+   clockDelta = (double)(endClock.tv_sec - startClock.tv_sec) * 1000000.0;
+   clockDelta += (double)(endClock.tv_nsec - startClock.tv_nsec) / 1000.0;
+#else
+   clockDelta = (double)(endClock - startClock) * clockToMicro;
+#endif
+
+   if( clockDelta <= 0.0 )
+      clockDelta = 1.0;
+
+   if( clockDelta > worstProfiledCall )
+      worstProfiledCall = clockDelta;
+   timeInProfiledCall += clockDelta;
+   nbProfiledCall++;
 
    return retCode;
 }
