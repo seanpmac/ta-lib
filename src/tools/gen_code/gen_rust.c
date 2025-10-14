@@ -12,10 +12,6 @@ static void printRustLookbackFunctionSignature(FILE* out,
            prefix? prefix:"",
            funcNameBuffer);
 
-   // TODO: print input params
-   // TODO: print optional input params
-   // TODO: close function
-   // TODO: print return type
    print(out, gTempBuf);
    print(out, "\n");
 }
@@ -51,10 +47,6 @@ static void printRustDoublePrecisionFunctionSignature(FILE* out,
 
    indent = (unsigned int)strlen(gTempBuf);
 
-   // TODO: print input params
-   // TODO: print optional input params
-   // TODO: close function
-   // TODO: print return type
    print(out, gTempBuf);
    print(out, "\n");
    printIndent(out, indent);
@@ -73,12 +65,24 @@ static void printRustDoublePrecisionFunctionSignature(FILE* out,
 
 
       typeString = "";
-     defaultParamName = "";
+      defaultParamName = "";
       switch (inputParamInfo->type)
       {
       case TA_Input_Real:
          typeString = inputDoubleArrayType;
          defaultParamName = "inReal";
+         break;
+      case TA_Input_Integer:
+         typeString = inputIntArrayType;
+         defaultParamName = "inInteger";
+         break;
+      case TA_Input_Price:
+         typeString = inputDoubleArrayType;
+         defaultParamName = "inPrice";
+         break;
+      default:
+         typeString = inputDoubleArrayType;
+         defaultParamName = "inUnknown";
          break;
       }
 
@@ -99,12 +103,22 @@ static void printRustDoublePrecisionFunctionSignature(FILE* out,
       TA_GetOptInputParameterInfo( funcInfo->handle, i, &optInputParamInfo );
 
       typeString = "";
-     defaultParamName = "";
+      defaultParamName = "";
       switch( optInputParamInfo->type )
       {
       case TA_OptInput_RealRange:
+      case TA_OptInput_RealList:
          typeString = "double";
          defaultParamName = "optInReal";
+         break;
+      case TA_OptInput_IntegerRange:
+      case TA_OptInput_IntegerList:
+         typeString = "int";
+         defaultParamName = "optInInteger";
+         break;
+      default:
+         typeString = "double";
+         defaultParamName = "optInUnknown";
          break;
       }
 
@@ -118,9 +132,7 @@ static void printRustDoublePrecisionFunctionSignature(FILE* out,
    }
 
       // outputs
-      // TODO: outBegIdx should probably be borrowed
    fprintf(out, "mut outBegIdx,\n");
-      // TODO: outNBElement should probably be borrowed
    fprintf(out, "mut outNBElement,\n");
 
    for (i = 0; i < funcInfo->nbOutput; i++)
@@ -128,12 +140,20 @@ static void printRustDoublePrecisionFunctionSignature(FILE* out,
       // retCode =  TA_GetOutputParameterInfo(funcInfo->handle, i, &outputParamInfo);
       TA_GetOutputParameterInfo(funcInfo->handle, i, &outputParamInfo);
       typeString = "";
-     defaultParamName = "";
+      defaultParamName = "";
       switch (outputParamInfo->type)
       {
       case TA_Output_Real:
          typeString = outputDoubleArrayType;
          defaultParamName = "outReal";
+         break;
+      case TA_Output_Integer:
+         typeString = outputIntArrayType;
+         defaultParamName = "outInteger";
+         break;
+      default:
+         typeString = outputDoubleArrayType;
+         defaultParamName = "outUnknown";
          break;
       }
 
@@ -146,7 +166,6 @@ static void printRustDoublePrecisionFunctionSignature(FILE* out,
       fprintf(out, ",\n");
    }
 
-   // todo: remove the extra comma and newline from out
   fprintf(out, ")\n");
 
 
@@ -179,12 +198,6 @@ static void printRustSinglePrecisionFunctionSignature(FILE* out,
    indent = (unsigned int)strlen(gTempBuf);
 
 
-   // TODO: print input params
-   // TODO: print optional input params
-   // TODO: close function
-   // TODO: print return type
-   // TODO: handle validation logic
-   // TODO: handle abstract frame logic
    print(out, gTempBuf);
    print(out, "\n");
    printIndent(out, indent);
