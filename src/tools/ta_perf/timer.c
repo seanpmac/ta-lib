@@ -41,7 +41,16 @@ uint64_t timer_now_us(void) {
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return (uint64_t)ts.tv_sec * 1000000ULL + (uint64_t)ts.tv_nsec / 1000ULL;
 #else
-    return (uint64_t)(clock() * clock_to_us);
+    /* 
+     * Using gettimeofday() instead of clock() for microsecond timing.
+     * gettimeofday() provides wall-clock time with microsecond precision,
+     * whereas clock() measures CPU time used by the process, which may not
+     * reflect real elapsed time. This change improves timing accuracy for
+     * performance measurements but may be affected by system clock changes.
+     */
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (uint64_t)tv.tv_sec * 1000000ULL + (uint64_t)tv.tv_usec;
 #endif
 }
 

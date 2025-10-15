@@ -5,6 +5,10 @@
 #include <time.h>
 #include <string.h>
 
+#define TIME_THRESHOLD_US 0.001
+
+#define THROUGHPUT_TIME_THRESHOLD_US 0.001
+
 #ifdef _WIN32
     #include <windows.h>
 #else
@@ -98,9 +102,9 @@ void report_json(FILE *out, const RunResult *serial, const RunResult *parallel,
             fprintf(out, "        \"total_time_us\": %.1f,\n", ind->total_time_us);
             fprintf(out, "        \"avg_time_us\": %.1f,\n", ind->avg_time_us);
             
-            /* Calculate throughput, avoiding division by zero */
-            double throughput = 0.0;
-            if (ind->total_time_us > 0.001) {  /* > 0.001μs */
+            if (ind->total_time_us > TIME_THRESHOLD_US) {  /* > 0.001μs */
+                throughput = (ind->bars_processed * 1000000.0) / ind->total_time_us;
+            }
                 throughput = (ind->bars_processed * 1000000.0) / ind->total_time_us;
             }
             fprintf(out, "        \"throughput_bars_per_sec\": %.0f\n", throughput);
@@ -152,19 +156,27 @@ void report_csv(FILE *out, const RunResult *serial, const RunResult *parallel) {
     
     if (serial) {
         for (int i = 0; i < serial->indicator_count; i++) {
-            const IndicatorResult *ind = &serial->indicators[i];
+            if (ind->total_time_us > TIME_THRESHOLD_US) {
+                throughput = (ind->bars_processed * 1000000.0) / ind->total_time_us;
+            }
+                throughput = (ind->bars_processed * 1000000.0) / ind->total_time_us;
+            }
             fprintf(out, "%s,serial,%d,%.1f,%.1f,%.0f\n",
                     ind->name, ind->calls, ind->total_time_us, ind->avg_time_us,
-                    (ind->bars_processed * 1000000.0) / ind->total_time_us);
+                    throughput);
         }
     }
     
     if (parallel) {
         for (int i = 0; i < parallel->indicator_count; i++) {
             const IndicatorResult *ind = &parallel->indicators[i];
+            double throughput = 0.0;
+            if (ind->total_time_us > 0.001) {
+                throughput = (ind->bars_processed * 1000000.0) / ind->total_time_us;
+            }
             fprintf(out, "%s,parallel,%d,%.1f,%.1f,%.0f\n",
                     ind->name, ind->calls, ind->total_time_us, ind->avg_time_us,
-                    (ind->bars_processed * 1000000.0) / ind->total_time_us);
+                    throughput);
         }
     }
 }

@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 /* Configuration */
-#define MAX_INDICATORS 192
+#define MAX_INDICATORS 250
 #define MAX_PAIRS 1000
 #define MAX_BARS 1000000
 #define MAX_PATH 512

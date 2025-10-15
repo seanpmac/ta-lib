@@ -86,7 +86,11 @@ static int should_run_indicator(const char *name, const char *filter) {
     return 0;
 }
 
-/* Helper: store indicator result with capacity guard */
+/* 
+ * Helper: store indicator result with capacity guard.
+ * MAX_INDICATORS is set to 250 to cover all current TA-Lib indicators (165 as of this writing) 
+ * with some extra room for future additions. Adjust as needed if more indicators are added.
+ */
 static int record_indicator_result(RunResult *result, const IndicatorResult *ind_result) {
     static int warned = 0;
 
@@ -189,15 +193,28 @@ static int run_indicator(const char *name, const PriceData *data, IndicatorResul
     
     /* Allocate output buffers */
     double *outReal0 = malloc(data->bar_count * sizeof(double));
+    if (!outReal0) {
+        TA_ParamHolderFree(params);
+        return -1;
+    }
     double *outReal1 = malloc(data->bar_count * sizeof(double));
-    double *outReal2 = malloc(data->bar_count * sizeof(double));
-    int *outInt = malloc(data->bar_count * sizeof(int));
-    
-    if (!outReal0 || !outReal1 || !outReal2 || !outInt) {
+    if (!outReal1) {
         free(outReal0);
+        TA_ParamHolderFree(params);
+        return -1;
+    }
+    double *outReal2 = malloc(data->bar_count * sizeof(double));
+    if (!outReal2) {
         free(outReal1);
+        free(outReal0);
+        TA_ParamHolderFree(params);
+        return -1;
+    }
+    int *outInt = malloc(data->bar_count * sizeof(int));
+    if (!outInt) {
         free(outReal2);
-        free(outInt);
+        free(outReal1);
+        free(outReal0);
         TA_ParamHolderFree(params);
         return -1;
     }
