@@ -562,6 +562,58 @@ if(BUILD_DEV_TOOLS)
 		"${CMAKE_CURRENT_SOURCE_DIR}/bin/$<TARGET_FILE_NAME:ta_regtest>"
 		DEPENDS ta_regtest
 	)
+
+	############
+	# ta_perf  #
+	############
+	set(TA_PERF_SOURCES
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_perf/ta_perf.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_perf/csv_loader.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_perf/timer.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_perf/runner.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_perf/reporter.c"
+	)
+
+	add_executable(ta_perf ${TA_PERF_SOURCES})
+
+	target_include_directories(ta_perf PRIVATE
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/tools/ta_perf"
+		"${CMAKE_CURRENT_SOURCE_DIR}/include"
+	)
+
+	# Link libraries
+	if(WIN32)
+		target_link_libraries(ta_perf PRIVATE ta-lib-static)
+	else()
+		target_link_libraries(ta_perf PRIVATE ta-lib-static m pthread)
+		if(NOT APPLE)
+			target_link_libraries(ta_perf PRIVATE rt)
+		endif()
+	endif()
+
+	# Optional OpenMP support
+	find_package(OpenMP)
+	if(OpenMP_C_FOUND)
+		target_link_libraries(ta_perf PRIVATE OpenMP::OpenMP_C)
+		target_compile_definitions(ta_perf PRIVATE HAVE_OPENMP)
+	endif()
+
+	set_target_properties(ta_perf PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+	)
+
+	install(TARGETS ta_perf
+		RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin"
+	)
+
+	add_custom_target(ensure_ta_perf_in_bin ALL
+		COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/bin"
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		"$<TARGET_FILE:ta_perf>"
+		"${CMAKE_CURRENT_SOURCE_DIR}/bin/$<TARGET_FILE_NAME:ta_perf>"
+		DEPENDS ta_perf
+	)
+
 endif()
 
 #############

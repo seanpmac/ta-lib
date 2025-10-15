@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../DaveSkenkder/Stock.Indicators/src"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../DaveSkenkder"
+		},
+		{
+			"path": "../QuantConnect/Lean/Data"
+		}
+	],
+	"settings": {}
+}

@@ -32,6 +32,11 @@ bin/gen_code*
 bin/ta_*
 !bin/HOLDER
 
+# ta_perf profiling artifacts
+profiling_results/
+*baseline.json
+*all_indicators*.json
+
 ## TA-Lib misc. build and packaging artifacts
 msbuild_path.txt
 lib/ta_*
