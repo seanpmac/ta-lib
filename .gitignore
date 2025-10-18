@@ -91,5 +91,14 @@ out/
 ## MSVC Windows builds (debug info)
 *.pdb
 
+# CMake/MSVC build directories and files
+build-win/
+build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
 # Never ignore .gitkeep files
 !**/.gitkeep

@@ -65,6 +65,19 @@ static int get_cpu_cores(void) {
 #endif
 }
 
+static void normalize_path_forward_slash(const char *src, char *dst, size_t dst_size) {
+    if( !src || !dst || dst_size == 0 )
+        return;
+
+    size_t s = 0;
+    size_t d = 0;
+    while( src[s] != '\0' && d + 1 < dst_size ) {
+        char c = src[s++];
+        dst[d++] = (c == '\\') ? '/' : c;
+    }
+    dst[d] = '\0';
+}
+
 void report_json(FILE *out, const RunResult *serial, const RunResult *parallel,
                  const PriceData *data, const Config *config) {
     char platform[128];
@@ -72,11 +85,13 @@ void report_json(FILE *out, const RunResult *serial, const RunResult *parallel,
     int cores = get_cpu_cores();
     time_t now = time(NULL);
     char timestamp[64];
-    
+    char input_file[1024];
+
     get_platform_info(platform, sizeof(platform));
     get_cpu_info(cpu, sizeof(cpu));
     strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
-    
+    normalize_path_forward_slash(data->filename, input_file, sizeof(input_file));
+
     fprintf(out, "{\n");
     fprintf(out, "  \"metadata\": {\n");
     fprintf(out, "    \"timestamp\": \"%s\",\n", timestamp);
@@ -84,10 +99,10 @@ void report_json(FILE *out, const RunResult *serial, const RunResult *parallel,
     fprintf(out, "    \"cpu_model\": \"%s\",\n", cpu);
     fprintf(out, "    \"cpu_cores\": %d,\n", cores);
     fprintf(out, "    \"ta_lib_version\": \"%s\",\n", TA_GetVersionString());
-    fprintf(out, "    \"input_file\": \"%s\",\n", data->filename);
+    fprintf(out, "    \"input_file\": \"%s\",\n", input_file);
     fprintf(out, "    \"bar_count\": %d\n", data->bar_count);
     fprintf(out, "  }");
-    
+
     if (serial) {
         fprintf(out, ",\n  \"serial\": {\n");
         fprintf(out, "    \"total_time_us\": %.1f,\n", serial->total_time_us);

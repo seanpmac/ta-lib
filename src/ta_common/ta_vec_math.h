@@ -261,4 +261,67 @@ static inline void TA_VEC_DivF(const float *lhs, const float *rhs,
    TA_VEC_DivF_Range(lhs, rhs, dest, 0, count);
 }
 
+/* Inline Simple Moving Average for performance-critical paths
+ * This eliminates function call overhead in tight loops like STOCH
+ * 
+ * Parameters:
+ *   inReal    - Input array
+ *   startIdx  - First index to process
+ *   endIdx    - Last index to process  
+ *   period    - SMA period
+ *   outReal   - Output array
+ *   outNbElement - Number of elements written
+ * 
+ * Returns the starting index of valid output
+ */
+static inline int TA_INLINE_SMA(const double *inReal,
+                                int startIdx,
+                                int endIdx,
+                                int period,
+                                double *outReal,
+                                int *outNbElement)
+{
+   if( !inReal || !outReal || !outNbElement || period < 1 )
+   {
+      if( outNbElement ) *outNbElement = 0;
+      return startIdx;
+   }
+   
+   int lookback = period - 1;
+   if( startIdx < lookback )
+      startIdx = lookback;
+   
+   if( startIdx > endIdx )
+   {
+      *outNbElement = 0;
+      return startIdx;
+   }
+   
+   /* Calculate initial sum */
+   double periodTotal = 0.0;
+   int trailingIdx = startIdx - lookback;
+   
+   #if defined(_OPENMP)
+   #pragma omp simd reduction(+:periodTotal)
+   #endif
+   for( int i = trailingIdx; i < startIdx; i++ )
+      periodTotal += inReal[i];
+   
+   /* Rolling SMA calculation with SIMD hint */
+   int outIdx = 0;
+   int i = startIdx;
+   const double invPeriod = 1.0 / (double)period;
+   
+   do
+   {
+      periodTotal += inReal[i];
+      outReal[outIdx++] = periodTotal * invPeriod;
+      periodTotal -= inReal[trailingIdx++];
+      i++;
+   } while( i <= endIdx );
+   
+   *outNbElement = outIdx;
+   return startIdx;
+}
+
 #endif /* TA_VEC_MATH_H */

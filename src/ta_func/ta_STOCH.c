@@ -69,6 +69,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+#include "ta_vec_math.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -519,37 +520,67 @@ double outSlowD[],
       today++;
    }
 
-   /* Un-smoothed K calculation completed. This K calculation is not returned
-    * to the caller. It is always smoothed and then return.
-    * Some documentation will refer to the smoothed version as being
-    * "K-Slow", but often this end up to be shorten to "K".
-    */
-   retCode = FUNCTION_CALL_DOUBLE(MA)( 0, outIdx-1,
-                                       tempBuffer, optInSlowK_Period,
-                                       optInSlowK_MAType,
-                                       outBegIdx, outNBElement, tempBuffer );
-
-
-   if( (retCode != ENUM_VALUE(RetCode,TA_SUCCESS,Success) ) || ((int)VALUE_HANDLE_DEREF(outNBElement) == 0) )
+   /* Un-smoothed K calculation completed. Smooth to SlowK. */
+   if( optInSlowK_MAType == TA_MAType_SMA )
    {
-      #if defined(USE_SINGLE_PRECISION_INPUT)
-         ARRAY_FREE( tempBuffer );
-      #else
-         ARRAY_FREE_COND( bufferIsAllocated, tempBuffer );
-      #endif
-      /* Something wrong happen? No further data? */
-      VALUE_HANDLE_DEREF_TO_ZERO(outBegIdx);
-      VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
-      return retCode;
+      int slowKOutNbElement = 0;
+      double *work = (double*)TA_Malloc( sizeof(double) * outIdx );
+      if( work )
+      {
+         for( i = 0; i < outIdx; ++i )
+            work[i] = tempBuffer[i];
+         TA_INLINE_SMA(work, 0, outIdx-1, optInSlowK_Period, tempBuffer, &slowKOutNbElement);
+         TA_Free(work);
+      }
+      VALUE_HANDLE_DEREF(outNBElement) = slowKOutNbElement;
+      if( slowKOutNbElement == 0 )
+      {
+         #if defined(USE_SINGLE_PRECISION_INPUT)
+            ARRAY_FREE( tempBuffer );
+         #else
+            ARRAY_FREE_COND( bufferIsAllocated, tempBuffer );
+         #endif
+         VALUE_HANDLE_DEREF_TO_ZERO(outBegIdx);
+         VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
+         return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
+      }
+   }
+   else
+   {
+      retCode = FUNCTION_CALL_DOUBLE(MA)( 0, outIdx-1,
+                                          tempBuffer, optInSlowK_Period,
+                                          optInSlowK_MAType,
+                                          outBegIdx, outNBElement, tempBuffer );
+
+
+      if( (retCode != ENUM_VALUE(RetCode,TA_SUCCESS,Success) ) || ((int)VALUE_HANDLE_DEREF(outNBElement) == 0) )
+      {
+         #if defined(USE_SINGLE_PRECISION_INPUT)
+            ARRAY_FREE( tempBuffer );
+         #else
+            ARRAY_FREE_COND( bufferIsAllocated, tempBuffer );
+         #endif
+         VALUE_HANDLE_DEREF_TO_ZERO(outBegIdx);
+         VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
+         return retCode;
+      }
    }
 
-   /* Calculate the %D which is simply a moving average of
-    * the already smoothed %K.
-    */
-   retCode = FUNCTION_CALL_DOUBLE(MA)( 0, (int)VALUE_HANDLE_DEREF(outNBElement)-1,
-                                       tempBuffer, optInSlowD_Period,
-                                       optInSlowD_MAType,
-                                       outBegIdx, outNBElement, outSlowD );
+   /* Calculate the %D from the already smoothed %K. */
+   if( optInSlowD_MAType == TA_MAType_SMA )
+   {
+      int slowDOutNbElement = 0;
+      TA_INLINE_SMA(tempBuffer, 0, (int)VALUE_HANDLE_DEREF(outNBElement)-1,
+                    optInSlowD_Period, outSlowD, &slowDOutNbElement);
+      VALUE_HANDLE_DEREF(outNBElement) = slowDOutNbElement;
+   }
+   else
+   {
+      retCode = FUNCTION_CALL_DOUBLE(MA)( 0, (int)VALUE_HANDLE_DEREF(outNBElement)-1,
+                                          tempBuffer, optInSlowD_Period,
+                                          optInSlowD_MAType,
+                                          outBegIdx, outNBElement, outSlowD );
+   }
 
    /* Copy tempBuffer into the caller buffer.
     * (Calculation could not be done directly in the

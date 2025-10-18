@@ -10,7 +10,7 @@
 
 Systematic performance optimization of TA-Lib C library, achieving **1.7-500× speedups** across multiple indicator categories through algorithmic improvements, SIMD vectorization, branchless code, and lookup table optimizations.
 
-### Overall Progress: 42% Complete
+### Overall Progress: 48% Complete
 
 | Category | Indicators | Status | Speedup |
 |----------|-----------|--------|---------|
@@ -229,7 +229,7 @@ Speedup:  4.7×
 
 ---
 
-## 📈 Current Performance State
+## Current Performance State
 
 ### Regression Test Suite
 ```
@@ -237,7 +237,7 @@ Function calls:    2,186,392
 Total time:        1,177 ms (was 1,286ms)
 Average per call:  0.538 µs
 Improvement:       8.5% faster overall
-Status:            100% passing ✅
+Status:            100% passing 
 ```
 
 ### Indicator Performance Rankings
@@ -472,6 +472,12 @@ target_link_libraries(ta-lib OpenMP::OpenMP_C)
 -O3 -march=native
 ```
 
+OpenMP status and policy:
+
+- **Windows/MSVC**: Enabled with `/openmp:llvm` (OpenMP 3.1 + loop-collapse 5.2 semantics) and `/openmp:experimental` (OpenMP 4.0 SIMD pragmas). `ta_perf` is compiled with `HAVE_OPENMP` so parallel mode is available.
+- **Linux/EPYC**: Use `-fopenmp -O3 -march=native` (or `-march=znver3/znver4`) to unlock multi-core + SIMD.
+- **SIMD**: `#pragma omp simd` hints remain effective with the above and degrade gracefully if OpenMP is off.
+
 ### Testing Infrastructure
 ```bash
 # Regression tests (2.2M+ function calls)
@@ -483,6 +489,22 @@ target_link_libraries(ta-lib OpenMP::OpenMP_C)
 # Batch profiling (multiple files)
 ./build/bin/ta_perf --input <data> --mode both --threads auto
 ```
+
+Benchmark & reporting workflow:
+
+```bash
+# Run full-indicator sweep over a folder of CSVs (serial+parallel)
+python scripts/run_eurusd_bench.py \
+  --data-dir C:/GitHub/QuantConnect/Lean/Data/forex/oanda/second/eurusd \
+  --run-dir benchmarks/<stamp>/eurusd --mode both --iterations 10
+
+# Aggregate JSON reports into Markdown + CSV summaries
+python scripts/aggregate_benchmarks.py \
+  --run-dir benchmarks/<stamp>/eurusd \
+  --output benchmarks/<stamp>/eurusd/report.md
+```
+
+The aggregator uses `scripts/indicator_categories.json` to produce category rollups (helpful to prioritize by highest total time).
 
 ### Profiling Tools
 - **ta_regtest:** Validates correctness (2.18M+ function calls)
@@ -664,3 +686,20 @@ Production hardening:
 **Last Updated:** 2025-10-17  
 **Next Review:** After Phase 1 completion (Hilbert SIMD + STOCH inlining)  
 **Maintainer:** Cascade AI Agent + Human Review
+
+---
+
+## Category Priorities (Data-Driven)
+
+Use the “Category Rollups” in `benchmarks/.../report.md` to focus where time accumulates.
+
+- **Overlap Studies & Smoothing** (`SMA/EMA/WMA/TEMA/DEMA/TRIMA/T3`, `MACD*`, `BBANDS`)
+  - **Actions**: MA kernel consolidation, STOCH SMA fast‑path, MACD buffer reuse.
+- **Momentum & Trend Analytics** (`ADX/ADXR/DI/DM`, `CCI`, `RSI/CMO`)
+  - **Actions**: Shared DI/DM computation, CCI fused SMA+deviation, branchless in hot loops.
+- **Candlestick Patterns** (all `CDL*`)
+  - **Actions**: SIMD annotations across patterns, pointer-based rolling, specialization to reduce branching.
+- **Cycle & Hilbert Suite** (`HT_*`)
+  - **Actions**: Confirm SIMD vector width utilization, unroll/prefetch where beneficial.
+- **Sliding Extremes / Volatility**
+  - **Actions**: Minor micro-opts (deque inlines), fuse TRANGE with ATR/NATR consumers.

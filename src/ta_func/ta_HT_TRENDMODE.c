@@ -207,7 +207,7 @@ int outInteger[],
     * smooth price. In the case of this algorithm,
     * we will never need more than 50 values.
     */
-   #define SMOOTH_PRICE_SIZE 50
+   #define SMOOTH_PRICE_SIZE 64
    CIRCBUF_PROLOG(smoothPrice,double,SMOOTH_PRICE_SIZE);
    int idx;
 
@@ -618,7 +618,7 @@ int outInteger[],
 /* Generated */    double I1ForEvenPrev2, I1ForEvenPrev3;
 /* Generated */    double rad2Deg, deg2Rad, constDeg2RadBy360;
 /* Generated */    double todayValue, smoothPeriod;
-/* Generated */    #define SMOOTH_PRICE_SIZE 50
+/* Generated */    #define SMOOTH_PRICE_SIZE 64
 /* Generated */    CIRCBUF_PROLOG(smoothPrice,double,SMOOTH_PRICE_SIZE);
 /* Generated */    int idx;
 /* Generated */    int DCPeriodInt;

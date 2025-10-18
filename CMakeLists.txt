@@ -410,6 +410,15 @@ find_package(OpenMP)
 if(OpenMP_C_FOUND)
 	target_link_libraries(ta-lib PRIVATE OpenMP::OpenMP_C)
 	target_link_libraries(ta-lib-static PRIVATE OpenMP::OpenMP_C)
+	
+	# MSVC: Use standard OpenMP flag (experimental causes issues with some features)
+	# Note: Standard /openmp supports most pragmas; experimental needed for advanced SIMD reductions
+	# but has compatibility issues with omp_sched_t and other types
+	if(MSVC)
+            target_compile_options(ta-lib PRIVATE /openmp:llvm /openmp:experimental)
+            target_compile_options(ta-lib-static PRIVATE /openmp:llvm /openmp:experimental)
+        endif()
+	
 	message(STATUS "OpenMP enabled for ta-lib (SIMD and parallel execution support)")
 else()
 	message(STATUS "OpenMP not found - building without SIMD/parallel support")
@@ -605,15 +614,18 @@ if(BUILD_DEV_TOOLS)
 
 	# Optional OpenMP support
 	find_package(OpenMP)
-	if(OpenMP_C_FOUND)
-		target_link_libraries(ta_perf PRIVATE OpenMP::OpenMP_C)
-		target_compile_definitions(ta_perf PRIVATE HAVE_OPENMP)
-	endif()
+            target_compile_options(ta_perf PRIVATE /openmp:llvm /openmp:experimental)
+        endif()
+endif()
 
-	set_target_properties(ta_perf PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-	)
+# Ensure parallel path is compiled on MSVC even if FindOpenMP did not detect it
+if(MSVC)
+    target_compile_definitions(ta_perf PRIVATE HAVE_OPENMP)
+endif()
 
+set_target_properties(ta_perf PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+)
 	install(TARGETS ta_perf
 		RUNTIME DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/bin"
 	)

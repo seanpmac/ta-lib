@@ -34,6 +34,8 @@ typedef struct {
     int front;                  /* Index of front element */
     int back;                   /* Index one past back element */
     int isMinDeque;             /* 1 for min (increasing), 0 for max (decreasing) */
+    int isPowerOf2;             /* 1 if capacity is power of 2 (enables bitwise ops) */
+    int mask;                   /* capacity - 1, for bitwise modulo */
     TA_DequeElement stackBuf[TA_EXTREMA_STACK_THRESHOLD];  /* Stack allocation */
 } TA_ExtremaDeque;
 
@@ -44,6 +46,10 @@ static inline void TA_ExtremaDeque_Init(TA_ExtremaDeque *dq, int period, int isM
     dq->front = 0;
     dq->back = 0;
     dq->isMinDeque = isMin;
+    
+    /* Check if capacity is a power of 2 for bitwise optimization */
+    dq->isPowerOf2 = (dq->capacity & (dq->capacity - 1)) == 0;
+    dq->mask = dq->capacity - 1;
     
     if( dq->capacity <= TA_EXTREMA_STACK_THRESHOLD )
     {
@@ -80,7 +86,7 @@ static inline TA_DequeElement TA_ExtremaDeque_Front(const TA_ExtremaDeque *dq)
 /* Get back element */
 static inline TA_DequeElement TA_ExtremaDeque_Back(const TA_ExtremaDeque *dq)
 {
-    int backIdx = (dq->back - 1 + dq->capacity) % dq->capacity;
+    int backIdx = dq->isPowerOf2 ? ((dq->back - 1) & dq->mask) : ((dq->back - 1 + dq->capacity) % dq->capacity);
     return dq->elements[backIdx];
 }
 
@@ -89,7 +95,7 @@ static inline void TA_ExtremaDeque_PopFront(TA_ExtremaDeque *dq)
 {
     if( !TA_ExtremaDeque_IsEmpty(dq) )
     {
-        dq->front = (dq->front + 1) % dq->capacity;
+        dq->front = dq->isPowerOf2 ? ((dq->front + 1) & dq->mask) : ((dq->front + 1) % dq->capacity);
     }
 }
 
@@ -98,7 +104,7 @@ static inline void TA_ExtremaDeque_PopBack(TA_ExtremaDeque *dq)
 {
     if( !TA_ExtremaDeque_IsEmpty(dq) )
     {
-        dq->back = (dq->back - 1 + dq->capacity) % dq->capacity;
+        dq->back = dq->isPowerOf2 ? ((dq->back - 1) & dq->mask) : ((dq->back - 1 + dq->capacity) % dq->capacity);
     }
 }
 
@@ -107,7 +113,7 @@ static inline void TA_ExtremaDeque_PushBack(TA_ExtremaDeque *dq, int idx, double
 {
     dq->elements[dq->back].idx = idx;
     dq->elements[dq->back].val = val;
-    dq->back = (dq->back + 1) % dq->capacity;
+    dq->back = dq->isPowerOf2 ? ((dq->back + 1) & dq->mask) : ((dq->back + 1) % dq->capacity);
 }
 
 /* Compare values based on deque type (min or max) */

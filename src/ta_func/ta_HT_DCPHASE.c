@@ -200,11 +200,12 @@ double outReal[],
 
    double todayValue, smoothPeriod;
 
-   /* Varaible used to keep track of the previous
+   /* Allocate a circular buffer to hold "period" amount of
     * smooth price. In the case of this algorithm,
     * we will never need more than 50 values.
+    * Set to 64 (next power-of-2) for bitwise index optimization.
     */
-   #define SMOOTH_PRICE_SIZE 50
+   #define SMOOTH_PRICE_SIZE 64
    CIRCBUF_PROLOG(smoothPrice,double,SMOOTH_PRICE_SIZE);
    int idx;
 
