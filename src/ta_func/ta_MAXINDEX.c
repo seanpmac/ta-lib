@@ -67,6 +67,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_sliding_extrema.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -173,9 +174,9 @@ int outInteger[],
 /**** END GENCODE SECTION 3 - DO NOT DELETE THIS LINE ****/
 {
    /* Insert local variables here. */
-   double highest, tmp;
+   TA_ExtremaDeque deque;
    int outIdx, nbInitialElementNeeded;
-   int trailingIdx, today, i, highestIdx;
+   int trailingIdx, today;
 
 /**** START GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 /* Generated */ 
@@ -234,42 +235,38 @@ int outInteger[],
    /* Proceed with the calculation for the requested range.
     * Note that this algorithm allows the input and
     * output to be the same buffer.
+    * 
+    * Uses monotonic deque for O(n) sliding window maximum index.
     */
+   
+   /* Initialize monotonic deque (decreasing order for MAX) */
+   TA_ExtremaDeque_Init(&deque, optInTimePeriod, 0);
+   
    outIdx = 0;
    today       = startIdx;
-   trailingIdx = startIdx-nbInitialElementNeeded;
-   highestIdx  = -1;
-   highest     = 0.0;
+   trailingIdx = startIdx - nbInitialElementNeeded;
 
+   /* Fill the initial window */
+   for( int i = trailingIdx; i < startIdx; i++ )
+   {
+      TA_ExtremaDeque_Push(&deque, i, inReal[i], trailingIdx);
+   }
+
+   /* Process each output element */
    while( today <= endIdx )
    {
-      tmp = inReal[today];
-
-      if( highestIdx < trailingIdx )
-      {
-        highestIdx = trailingIdx;
-        highest = inReal[highestIdx];
-        i = highestIdx;
-        while( ++i<=today )
-        {
-           tmp = inReal[i];
-           if( tmp > highest )
-           {
-              highestIdx = i;
-              highest = tmp;
-           }
-        }
-      }
-      else if( tmp >= highest )
-      {
-        highestIdx = today;
-        highest = tmp;
-      }
-
-      outInteger[outIdx++] = highestIdx;
+      /* Add current element to deque */
+      TA_ExtremaDeque_Push(&deque, today, inReal[today], trailingIdx);
+      
+      /* Front of deque has the maximum index */
+      outInteger[outIdx++] = TA_ExtremaDeque_GetIndex(&deque);
+      
       trailingIdx++;
       today++;
    }
+
+   /* Cleanup */
+   TA_ExtremaDeque_Free(&deque);
 
    /* Keep the outBegIdx relative to the
     * caller input before returning.
@@ -327,9 +324,9 @@ int outInteger[],
 /* Generated */                           int           outInteger[] )
 /* Generated */ #endif
 /* Generated */ {
-/* Generated */    double highest, tmp;
+/* Generated */    TA_ExtremaDeque deque;
 /* Generated */    int outIdx, nbInitialElementNeeded;
-/* Generated */    int trailingIdx, today, i, highestIdx;
+/* Generated */    int trailingIdx, today;
 /* Generated */  #ifndef TA_FUNC_NO_RANGE_CHECK
 /* Generated */     if( startIdx < 0 )
 /* Generated */        return ENUM_VALUE(RetCode,TA_OUT_OF_RANGE_START_INDEX,OutOfRangeStartIndex);
@@ -359,38 +356,36 @@ int outInteger[],
 /* Generated */       VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
 /* Generated */       return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 /* Generated */    }
+/* Generated */    
+/* Generated */    /* Initialize monotonic deque (decreasing order for MAX) */
+/* Generated */    TA_ExtremaDeque_Init(&deque, optInTimePeriod, 0);
+/* Generated */    
 /* Generated */    outIdx = 0;
 /* Generated */    today       = startIdx;
 /* Generated */    trailingIdx = startIdx-nbInitialElementNeeded;
-/* Generated */    highestIdx  = -1;
-/* Generated */    highest     = 0.0;
+/* Generated */    
+/* Generated */    /* Fill the initial window */
+/* Generated */    for( int i = trailingIdx; i < startIdx; i++ )
+/* Generated */    {
+/* Generated */       TA_ExtremaDeque_Push(&deque, i, (double)inReal[i], trailingIdx);
+/* Generated */    }
+/* Generated */    
+/* Generated */    /* Process each output element */
 /* Generated */    while( today <= endIdx )
 /* Generated */    {
-/* Generated */       tmp = inReal[today];
-/* Generated */       if( highestIdx < trailingIdx )
-/* Generated */       {
-/* Generated */         highestIdx = trailingIdx;
-/* Generated */         highest = inReal[highestIdx];
-/* Generated */         i = highestIdx;
-/* Generated */         while( ++i<=today )
-/* Generated */         {
-/* Generated */            tmp = inReal[i];
-/* Generated */            if( tmp > highest )
-/* Generated */            {
-/* Generated */               highestIdx = i;
-/* Generated */               highest = tmp;
-/* Generated */            }
-/* Generated */         }
-/* Generated */       }
-/* Generated */       else if( tmp >= highest )
-/* Generated */       {
-/* Generated */         highestIdx = today;
-/* Generated */         highest = tmp;
-/* Generated */       }
-/* Generated */       outInteger[outIdx++] = highestIdx;
+/* Generated */       /* Add current element to deque */
+/* Generated */       TA_ExtremaDeque_Push(&deque, today, (double)inReal[today], trailingIdx);
+/* Generated */       
+/* Generated */       /* Front of deque has the maximum index */
+/* Generated */       outInteger[outIdx++] = TA_ExtremaDeque_GetIndex(&deque);
+/* Generated */       
 /* Generated */       trailingIdx++;
 /* Generated */       today++;
 /* Generated */    }
+/* Generated */    
+/* Generated */    /* Cleanup */
+/* Generated */    TA_ExtremaDeque_Free(&deque);
+/* Generated */    
 /* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
 /* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
 /* Generated */    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);

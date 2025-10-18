@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/Sean/GitHub/ta-lib/build-asan/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

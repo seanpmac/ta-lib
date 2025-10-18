@@ -202,14 +202,22 @@ double outReal[],
    /* Insert TA function code here. */
 
    /* Typical price = (High + Low + Close ) / 3 */
-   outIdx    = 0;
+   const int count = endIdx - startIdx + 1;
+   const double invThree = 1.0 / 3.0;
+   const double *highPtr  = inHigh  + startIdx;
+   const double *lowPtr   = inLow   + startIdx;
+   const double *closePtr = inClose + startIdx;
+   double *dest           = outReal;
 
-   for( i= startIdx; i <= endIdx; i++ )
+#if defined(_OPENMP)
+   #pragma omp simd
+#endif
+   for( i = 0; i < count; i++ )
    {
-      outReal[outIdx++] = ( inHigh [i] +
-                              inLow  [i] +
-                              inClose[i] ) / 3.0;
+      dest[i] = (highPtr[i] + lowPtr[i] + closePtr[i]) * invThree;
    }
+
+   outIdx = count;
 
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
@@ -287,16 +295,29 @@ double outReal[],
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
-/* Generated */    outIdx    = 0;
-/* Generated */    for( i= startIdx; i <= endIdx; i++ )
-/* Generated */    {
-/* Generated */       outReal[outIdx++] = ( inHigh [i] +
-/* Generated */                               inLow  [i] +
-/* Generated */                               inClose[i] ) / 3.0;
-/* Generated */    }
-/* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
-/* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
-/* Generated */    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
+   const int count = endIdx - startIdx + 1;
+   const double invThree = 1.0 / 3.0;
+   const float *highPtr  = inHigh  + startIdx;
+   const float *lowPtr   = inLow   + startIdx;
+   const float *closePtr = inClose + startIdx;
+   double *dest          = outReal;
+
+#if defined(_OPENMP)
+   #pragma omp simd
+#endif
+   for( i = 0; i < count; i++ )
+   {
+      const double highVal  = (double)highPtr[i];
+      const double lowVal   = (double)lowPtr[i];
+      const double closeVal = (double)closePtr[i];
+      dest[i] = (highVal + lowVal + closeVal) * invThree;
+   }
+
+   outIdx = count;
+
+   VALUE_HANDLE_DEREF(outNBElement) = outIdx;
+   VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+   return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 /* Generated */ }
 /* Generated */ 
 /* Generated */ #if defined( _MANAGED )

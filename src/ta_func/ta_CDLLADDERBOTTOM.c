@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -224,10 +225,40 @@ int outInteger[],
    ShadowVeryShortPeriodTotal = 0;
    ShadowVeryShortTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(ShadowVeryShort);
 
-   i = ShadowVeryShortTrailingIdx;
-   while( i < startIdx ) {
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i-1 );
-        i++;
+   const int shadowVeryShortStartIdx = ShadowVeryShortTrailingIdx - 1;
+   const int shadowVeryShortCount = endIdx - shadowVeryShortStartIdx + 1;
+   double *shadowVeryShortRange = NULL;
+   int useVectorRange = 0;
+
+   if( shadowVeryShortStartIdx >= 0 && shadowVeryShortCount > 0 )
+   {
+      shadowVeryShortRange = (double *)TA_Malloc(sizeof(double) * (size_t)shadowVeryShortCount);
+      if( shadowVeryShortRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_ShadowVeryShort],
+                              inOpen, inHigh, inLow, inClose,
+                              shadowVeryShortStartIdx, shadowVeryShortCount,
+                              shadowVeryShortRange);
+
+         for( i = ShadowVeryShortTrailingIdx; i < startIdx; ++i )
+            ShadowVeryShortPeriodTotal += shadowVeryShortRange[(i-1) - shadowVeryShortStartIdx];
+
+         useVectorRange = 1;
+      }
+      else
+      {
+         TA_Free(shadowVeryShortRange);
+         shadowVeryShortRange = NULL;
+      }
+   }
+
+   if( !useVectorRange )
+   {
+      i = ShadowVeryShortTrailingIdx;
+      while( i < startIdx ) {
+           ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i-1 );
+           i++;
+      }
    }
    i = startIdx;
 
@@ -261,8 +292,16 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i-1 )
-                                    - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx-1 );
+        if( useVectorRange )
+        {
+            ShadowVeryShortPeriodTotal += shadowVeryShortRange[(i-1) - shadowVeryShortStartIdx]
+                                         - shadowVeryShortRange[(ShadowVeryShortTrailingIdx-1) - shadowVeryShortStartIdx];
+        }
+        else
+        {
+            ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i-1 )
+                                        - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx-1 );
+        }
         i++;
         ShadowVeryShortTrailingIdx++;
    } while( i <= endIdx );
@@ -270,6 +309,9 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRange )
+      TA_Free(shadowVeryShortRange);
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

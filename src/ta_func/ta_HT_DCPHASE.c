@@ -79,6 +79,10 @@
 /* Generated */    #include "ta_memory.h"
 /* Generated */ #endif
 /* Generated */ 
+/* Generated */ #ifndef TA_HILBERT_TRIG_H
+/* Generated */    #include "ta_hilbert_trig.h"
+/* Generated */ #endif
+/* Generated */ 
 /* Generated */ #define TA_PREFIX(x) TA_##x
 /* Generated */ #define INPUT_TYPE   double
 /* Generated */ 
@@ -235,6 +239,9 @@ double outReal[],
 /**** END GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 
    /* Insert TA function code here. */
+
+   /* Initialize trigonometric lookup tables for Hilbert Transform */
+   TA_HT_InitTrigTables();
 
    CIRCBUF_INIT_LOCAL_ONLY(smoothPrice,double);
 
@@ -403,7 +410,14 @@ double outReal[],
       prevI2 = I2;
       tempReal = period;
       if( (Im != 0.0) && (Re != 0.0) )
-         period = 360.0 / (std_atan(Im/Re)*rad2Deg);
+      {
+         double phi = std_atan2(Im, Re);
+         if( phi > (PI*0.5) )
+            phi -= PI;
+         else if( phi < -(PI*0.5) )
+            phi += PI;
+         period = 360.0 / (phi*rad2Deg);
+      }
       tempReal2 = 1.5*tempReal;
       if( period > tempReal2)
          period = tempReal2;
@@ -424,25 +438,20 @@ double outReal[],
       realPart = 0.0;
       imagPart = 0.0;
 
-      /* idx is used to iterate for up to 50 of the last
-       * value of smoothPrice.
-       */
-      idx = smoothPrice_Idx;
-      for( i=0; i < DCPeriodInt; i++ )
-      {
-         tempReal  = ((double)i*constDeg2RadBy360)/(double)DCPeriodInt;
-         tempReal2 = smoothPrice[idx];
-         realPart += std_sin(tempReal)*tempReal2;
-         imagPart += std_cos(tempReal)*tempReal2;
-         if( idx == 0 )
-            idx = SMOOTH_PRICE_SIZE-1;
-         else
-            idx--;
-      }
+      /* Use optimized DFT accumulation with pre-computed trig tables */
+      TA_HT_AccumulateDFT(smoothPrice, SMOOTH_PRICE_SIZE, smoothPrice_Idx,
+                          DCPeriodInt, &realPart, &imagPart);
 
       tempReal = std_fabs(imagPart);
       if( tempReal > 0.0 )
-         DCPhase = std_atan(realPart/imagPart)*rad2Deg;
+      {
+         double phase = std_atan2(realPart, imagPart);
+         if( phase > (PI*0.5) )
+            phase -= PI;
+         else if( phase < -(PI*0.5) )
+            phase += PI;
+         DCPhase = phase*rad2Deg;
+      }
       else if( tempReal <= 0.01 )
       {
          if( realPart < 0.0 )
@@ -649,7 +658,14 @@ double outReal[],
 /* Generated */       prevI2 = I2;
 /* Generated */       tempReal = period;
 /* Generated */       if( (Im != 0.0) && (Re != 0.0) )
-/* Generated */          period = 360.0 / (std_atan(Im/Re)*rad2Deg);
+/* Generated */       {
+/* Generated */          double phi = std_atan2(Im, Re);
+/* Generated */          if( phi > (PI*0.5) )
+/* Generated */             phi -= PI;
+/* Generated */          else if( phi < -(PI*0.5) )
+/* Generated */             phi += PI;
+/* Generated */          period = 360.0 / (phi*rad2Deg);
+/* Generated */       }
 /* Generated */       tempReal2 = 1.5*tempReal;
 /* Generated */       if( period > tempReal2)
 /* Generated */          period = tempReal2;
@@ -680,7 +696,14 @@ double outReal[],
 /* Generated */       }
 /* Generated */       tempReal = std_fabs(imagPart);
 /* Generated */       if( tempReal > 0.0 )
-/* Generated */          DCPhase = std_atan(realPart/imagPart)*rad2Deg;
+/* Generated */       {
+/* Generated */          double phase = std_atan2(realPart, imagPart);
+/* Generated */          if( phase > (PI*0.5) )
+/* Generated */             phase -= PI;
+/* Generated */          else if( phase < -(PI*0.5) )
+/* Generated */             phase += PI;
+/* Generated */          DCPhase = phase*rad2Deg;
+/* Generated */       }
 /* Generated */       else if( tempReal <= 0.01 )
 /* Generated */       {
 /* Generated */          if( realPart < 0.0 )
@@ -688,7 +711,7 @@ double outReal[],
 /* Generated */          else if( realPart > 0.0 )
 /* Generated */             DCPhase += 90.0;
 /* Generated */       }
-/* Generated */       DCPhase += 90.0;
+/* Generated */       /* Compensate for one bar lag of the weighted moving average */
 /* Generated */       DCPhase += 360.0 / smoothPeriod;
 /* Generated */       if( imagPart < 0.0 )
 /* Generated */          DCPhase += 180.0;

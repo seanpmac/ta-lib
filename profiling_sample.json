@@ -1,0 +1,2292 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-15T03:01:28Z",
+    "platform": "Darwin arm64",
+    "cpu_model": "Unknown CPU",
+    "cpu_cores": 10,
+    "ta_lib_version": "0.6.4 (Oct 13 2025 23:21:07)",
+    "input_file": "src/tools/ta_perf/sample_data.csv",
+    "bar_count": 5
+  },
+  "serial": {
+    "total_time_us": 85.0,
+    "indicators": [
+      {
+        "name": "ACCBANDS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "BBANDS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "DEMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "EMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_TRENDLINE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "KAMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAVP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MIDPOINT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MIDPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SAR",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "SAREXT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "T3",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TEMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TRIMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "WMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADXR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "APO",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AROON",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AROONOSC",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "BOP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CCI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CMO",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "DX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "IMI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MACD",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "MACDEXT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MACDFIX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MFI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINUS_DI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINUS_DM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MOM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "PLUS_DI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "PLUS_DM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "PPO",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROC",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROCP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROCR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROCR100",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "RSI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STOCH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STOCHF",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STOCHRSI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TRIX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ULTOSC",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "WILLR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADOSC",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "OBV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ATR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "NATR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TRANGE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AVGPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MEDPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TYPPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "WCLPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_DCPERIOD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_DCPHASE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_PHASOR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_SINE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_TRENDMODE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL2CROWS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3BLACKCROWS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3INSIDE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3LINESTRIKE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3OUTSIDE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3STARSINSOUTH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3WHITESOLDIERS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLABANDONEDBABY",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLADVANCEBLOCK",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLBELTHOLD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLBREAKAWAY",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLCLOSINGMARUBOZU",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLCONCEALBABYSWALL",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLCOUNTERATTACK",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLDARKCLOUDCOVER",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLDOJI",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLDOJISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLDRAGONFLYDOJI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLENGULFING",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLEVENINGDOJISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLEVENINGSTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLGAPSIDESIDEWHITE",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLGRAVESTONEDOJI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHAMMER",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLHANGINGMAN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHARAMI",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLHARAMICROSS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHIGHWAVE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHIKKAKE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHIKKAKEMOD",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLHOMINGPIGEON",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLIDENTICAL3CROWS",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLINNECK",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLINVERTEDHAMMER",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLKICKING",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLKICKINGBYLENGTH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLLADDERBOTTOM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLLONGLEGGEDDOJI",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLLONGLINE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMARUBOZU",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMATCHINGLOW",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMATHOLD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMORNINGDOJISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMORNINGSTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLONNECK",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLPIERCING",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLRICKSHAWMAN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLRISEFALL3METHODS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSEPARATINGLINES",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSHOOTINGSTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSHORTLINE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSPINNINGTOP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSTALLEDPATTERN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSTICKSANDWICH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLTAKURI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLTASUKIGAP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLTHRUSTING",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLTRISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLUNIQUE3RIVER",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLUPSIDEGAP2CROWS",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLXSIDEGAP3METHODS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "BETA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CORREL",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG_ANGLE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG_INTERCEPT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG_SLOPE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STDDEV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TSF",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "VAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ACOS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ASIN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ATAN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CEIL",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "COS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "COSH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "EXP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "FLOOR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LOG10",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SIN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SINH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SQRT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TAN",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "TANH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "DIV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAXINDEX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MIN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MININDEX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINMAX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINMAXINDEX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MULT",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "SUB",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SUM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ALLIGATOR",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "AVGDEV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      }
+    ]
+  },
+  "parallel": {
+    "total_time_us": 150.0,
+    "thread_count": 10,
+    "speedup": 0.57,
+    "efficiency": 0.057,
+    "indicators": [
+      {
+        "name": "ACCBANDS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "BBANDS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "DEMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "EMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_TRENDLINE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "KAMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAVP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MIDPOINT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MIDPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SAREXT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "T3",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TEMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TRIMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "WMA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADXR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "APO",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AROON",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AROONOSC",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "BOP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CCI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CMO",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "DX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "IMI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MACD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MACDEXT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MACDFIX",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "MFI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINUS_DI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINUS_DM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MOM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ULTOSC",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STOCHF",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STOCHRSI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TRIX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "RSI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STOCH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROCR100",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROCR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROCP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "WILLR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ROC",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG_SLOPE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "PLUS_DI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "PPO",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "STDDEV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "PLUS_DM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "OBV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TSF",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADOSC",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "ATR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "VAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3INSIDE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "NATR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLDOJI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ACOS",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "TRANGE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3LINESTRIKE",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "ASIN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AVGPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLDOJISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3OUTSIDE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MEDPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ATAN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TYPPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "WCLPRICE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3STARSINSOUTH",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLDRAGONFLYDOJI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CEIL",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLENGULFING",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "HT_DCPERIOD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL3WHITESOLDIERS",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "COS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_DCPHASE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLCOUNTERATTACK",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLEVENINGDOJISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLKICKING",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "COSH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "HT_PHASOR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLABANDONEDBABY",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "HT_SINE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLEVENINGSTAR",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "EXP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLDARKCLOUDCOVER",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLKICKINGBYLENGTH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLADVANCEBLOCK",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "HT_TRENDMODE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "FLOOR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLGAPSIDESIDEWHITE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLLADDERBOTTOM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLCONCEALBABYSWALL",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDL2CROWS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SQRT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLGRAVESTONEDOJI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLLONGLEGGEDDOJI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLBELTHOLD",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDL3BLACKCROWS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LOG10",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLCLOSINGMARUBOZU",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHAMMER",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLLONGLINE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TAN",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLSEPARATINGLINES",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLBREAKAWAY",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SUM",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SINH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSHORTLINE",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLHANGINGMAN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMARUBOZU",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLINNECK",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSHOOTINGSTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "TANH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SIN",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "ALLIGATOR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "AVGDEV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHARAMI",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMATCHINGLOW",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSPINNINGTOP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLRISEFALL3METHODS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLINVERTEDHAMMER",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "ADD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINMAXINDEX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG_ANGLE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MINMAX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHARAMICROSS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMATHOLD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLRICKSHAWMAN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLSTALLEDPATTERN",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "MININDEX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLIDENTICAL3CROWS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "DIV",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "LINEARREG_INTERCEPT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHIGHWAVE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MIN",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLPIERCING",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMORNINGDOJISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAXINDEX",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLSTICKSANDWICH",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHIKKAKE",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "MAX",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHOMINGPIGEON",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "BETA",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLONNECK",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLMORNINGSTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLHIKKAKEMOD",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CORREL",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "SUB",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLTRISTAR",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLTHRUSTING",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLXSIDEGAP3METHODS",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLTASUKIGAP",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLUPSIDEGAP2CROWS",
+        "calls": 1,
+        "total_time_us": 1.0,
+        "avg_time_us": 1.0,
+        "throughput_bars_per_sec": 5000000
+      },
+      {
+        "name": "CDLUNIQUE3RIVER",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      },
+      {
+        "name": "CDLTAKURI",
+        "calls": 1,
+        "total_time_us": 4.0,
+        "avg_time_us": 4.0,
+        "throughput_bars_per_sec": 1250000
+      },
+      {
+        "name": "MULT",
+        "calls": 1,
+        "total_time_us": 0.0,
+        "avg_time_us": 0.0,
+        "throughput_bars_per_sec": 0
+      }
+    ]
+  }
+}

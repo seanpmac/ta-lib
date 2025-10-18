@@ -351,10 +351,9 @@ double outReal[],
       tempValue1 = inReal[today++];
       tempValue2 = tempValue1 - prevValue;
       prevValue  = tempValue1;
-      if( tempValue2 < 0 )
-         prevLoss -= tempValue2;
-      else
-         prevGain += tempValue2;
+      /* Branchless: use max to avoid if statement */
+      prevLoss += fmax(0.0, -tempValue2);
+      prevGain += fmax(0.0, tempValue2);
    }
 
 
@@ -396,10 +395,9 @@ double outReal[],
 
          prevLoss *= (optInTimePeriod-1);
          prevGain *= (optInTimePeriod-1);
-         if( tempValue2 < 0 )
-            prevLoss -= tempValue2;
-         else
-            prevGain += tempValue2;
+         /* Branchless: use max to avoid if statement */
+         prevLoss += fmax(0.0, -tempValue2);
+         prevGain += fmax(0.0, tempValue2);
 
          prevLoss /= optInTimePeriod;
          prevGain /= optInTimePeriod;
@@ -419,10 +417,9 @@ double outReal[],
 
       prevLoss *= (optInTimePeriod-1);
       prevGain *= (optInTimePeriod-1);
-      if( tempValue2 < 0 )
-         prevLoss -= tempValue2;
-      else
-         prevGain += tempValue2;
+      /* Branchless: use max to avoid if statement */
+      prevLoss += fmax(0.0, -tempValue2);
+      prevGain += fmax(0.0, tempValue2);
 
       prevLoss /= optInTimePeriod;
       prevGain /= optInTimePeriod;

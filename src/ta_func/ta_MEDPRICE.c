@@ -203,12 +203,21 @@ double outReal[],
     * low over multiple price bar.
     */
 
-   outIdx = 0;
+   const int count = endIdx - startIdx + 1;
+   const double invTwo = 0.5;
+   const double *highPtr = inHigh + startIdx;
+   const double *lowPtr  = inLow  + startIdx;
+   double *dest          = outReal;
 
-   for( i=startIdx; i <= endIdx; i++ )
+#if defined(_OPENMP)
+   #pragma omp simd
+#endif
+   for( i = 0; i < count; i++ )
    {
-      outReal[outIdx++] = (inHigh[i]+inLow[i])/2.0;
+      dest[i] = (highPtr[i] + lowPtr[i]) * invTwo;
    }
+
+   outIdx = count;
 
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
@@ -281,14 +290,27 @@ double outReal[],
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
-/* Generated */    outIdx = 0;
-/* Generated */    for( i=startIdx; i <= endIdx; i++ )
-/* Generated */    {
-/* Generated */       outReal[outIdx++] = (inHigh[i]+inLow[i])/2.0;
-/* Generated */    }
-/* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
-/* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
-/* Generated */    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
+   const int count = endIdx - startIdx + 1;
+   const double invTwo = 0.5;
+   const float *highPtr = inHigh + startIdx;
+   const float *lowPtr  = inLow  + startIdx;
+   double *dest         = outReal;
+
+#if defined(_OPENMP)
+   #pragma omp simd
+#endif
+   for( i = 0; i < count; i++ )
+   {
+      const double highVal = (double)highPtr[i];
+      const double lowVal  = (double)lowPtr[i];
+      dest[i] = (highVal + lowVal) * invTwo;
+   }
+
+   outIdx = count;
+
+   VALUE_HANDLE_DEREF(outNBElement) = outIdx;
+   VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+   return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 /* Generated */ }
 /* Generated */ 
 /* Generated */ #if defined( _MANAGED )

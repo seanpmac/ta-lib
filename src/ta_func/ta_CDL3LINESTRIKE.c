@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -225,11 +226,42 @@ int outInteger[],
    NearPeriodTotal[2] = 0;
    NearTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(Near);
 
-   i = NearTrailingIdx;
-   while( i < startIdx ) {
-        NearPeriodTotal[3] += TA_CANDLERANGE( Near, i-3 );
-        NearPeriodTotal[2] += TA_CANDLERANGE( Near, i-2 );
-        i++;
+   const int nearStartIdx = NearTrailingIdx - 3;
+   const int nearCount = endIdx - nearStartIdx + 1;
+   double *nearRange = NULL;
+   int useVectorRange = 0;
+
+   if( nearStartIdx >= 0 && nearCount > 0 )
+   {
+      nearRange = (double *)TA_Malloc(sizeof(double) * (size_t)nearCount);
+      if( nearRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_Near],
+                              inOpen, inHigh, inLow, inClose,
+                              nearStartIdx, nearCount,
+                              nearRange);
+         for( i = NearTrailingIdx; i < startIdx; ++i )
+         {
+            NearPeriodTotal[3] += nearRange[(i-3) - nearStartIdx];
+            NearPeriodTotal[2] += nearRange[(i-2) - nearStartIdx];
+         }
+         useVectorRange = 1;
+      }
+      else
+      {
+         TA_Free(nearRange);
+         nearRange = NULL;
+      }
+   }
+
+   if( !useVectorRange )
+   {
+      i = NearTrailingIdx;
+      while( i < startIdx ) {
+           NearPeriodTotal[3] += TA_CANDLERANGE( Near, i-3 );
+           NearPeriodTotal[2] += TA_CANDLERANGE( Near, i-2 );
+           i++;
+      }
    }
    i = startIdx;
 
@@ -278,9 +310,18 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        for (totIdx = 3; totIdx >= 2; --totIdx)
-            NearPeriodTotal[totIdx] += TA_CANDLERANGE( Near, i-totIdx )
-                                     - TA_CANDLERANGE( Near, NearTrailingIdx-totIdx );
+        if( useVectorRange )
+        {
+            for( totIdx = 3; totIdx >= 2; --totIdx )
+                NearPeriodTotal[totIdx] += nearRange[(i-totIdx) - nearStartIdx]
+                                         - nearRange[(NearTrailingIdx - totIdx) - nearStartIdx];
+        }
+        else
+        {
+            for (totIdx = 3; totIdx >= 2; --totIdx)
+                NearPeriodTotal[totIdx] += TA_CANDLERANGE( Near, i-totIdx )
+                                         - TA_CANDLERANGE( Near, NearTrailingIdx-totIdx );
+        }
         i++;
         NearTrailingIdx++;
    } while( i <= endIdx );
@@ -288,6 +329,9 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRange )
+      TA_Free(nearRange);
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

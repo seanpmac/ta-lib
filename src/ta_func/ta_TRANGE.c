@@ -69,6 +69,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_trange.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -165,9 +166,7 @@ double outReal[],
 /**** END GENCODE SECTION 3 - DO NOT DELETE THIS LINE ****/
 {
    /* Insert local variables here. */
-   int today, outIdx;
-   double val2, val3, greatest;
-   double tempCY, tempLT, tempHT;
+   int outIdx;
 
 /**** START GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 /* Generated */ 
@@ -226,28 +225,10 @@ double outReal[],
       return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
    }
 
-   outIdx = 0;
-   today = startIdx;
-   while( today <= endIdx )
-   {
-
-      /* Find the greatest of the 3 values. */
-      tempLT = inLow[today];
-      tempHT = inHigh[today];
-      tempCY = inClose[today-1];
-      greatest = tempHT - tempLT; /* val1 */
-
-      val2 = std_fabs( tempCY - tempHT );
-      if( val2 > greatest )
-         greatest = val2;
-
-      val3 = std_fabs( tempCY - tempLT  );
-      if( val3 > greatest )
-         greatest = val3;
-
-      outReal[outIdx++] = greatest;
-      today++;
-   }
+   /* Use optimized vectorized True Range calculation */
+   TA_TrueRange_Array(startIdx, endIdx, inHigh, inLow, inClose, outReal);
+   
+   outIdx = endIdx - startIdx + 1;
 
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
@@ -306,9 +287,7 @@ double outReal[],
 /* Generated */                         double        outReal[] )
 /* Generated */ #endif
 /* Generated */ {
-/* Generated */    int today, outIdx;
-/* Generated */    double val2, val3, greatest;
-/* Generated */    double tempCY, tempLT, tempHT;
+/* Generated */    int outIdx;
 /* Generated */  #ifndef TA_FUNC_NO_RANGE_CHECK
 /* Generated */     if( startIdx < 0 )
 /* Generated */        return ENUM_VALUE(RetCode,TA_OUT_OF_RANGE_START_INDEX,OutOfRangeStartIndex);
@@ -334,23 +313,12 @@ double outReal[],
 /* Generated */       VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
 /* Generated */       return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 /* Generated */    }
-/* Generated */    outIdx = 0;
-/* Generated */    today = startIdx;
-/* Generated */    while( today <= endIdx )
-/* Generated */    {
-/* Generated */       tempLT = inLow[today];
-/* Generated */       tempHT = inHigh[today];
-/* Generated */       tempCY = inClose[today-1];
-/* Generated */       greatest = tempHT - tempLT; 
-/* Generated */       val2 = std_fabs( tempCY - tempHT );
-/* Generated */       if( val2 > greatest )
-/* Generated */          greatest = val2;
-/* Generated */       val3 = std_fabs( tempCY - tempLT  );
-/* Generated */       if( val3 > greatest )
-/* Generated */          greatest = val3;
-/* Generated */       outReal[outIdx++] = greatest;
-/* Generated */       today++;
-/* Generated */    }
+/* Generated */    
+/* Generated */    /* Use optimized vectorized True Range calculation (float inputs) */
+/* Generated */    TA_TrueRange_Array_F(startIdx, endIdx, inHigh, inLow, inClose, outReal);
+/* Generated */    
+/* Generated */    outIdx = endIdx - startIdx + 1;
+/* Generated */    
 /* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
 /* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
 /* Generated */    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);

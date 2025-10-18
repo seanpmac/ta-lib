@@ -406,7 +406,14 @@ double outReal[],
       prevI2 = I2;
       tempReal = period;
       if( (Im != 0.0) && (Re != 0.0) )
-         period = 360.0 / (std_atan(Im/Re)*rad2Deg);
+      {
+         double phi = std_atan2(Im, Re);
+         if( phi > (PI*0.5) )
+            phi -= PI;
+         else if( phi < -(PI*0.5) )
+            phi += PI;
+         period = 360.0 / (phi*rad2Deg);
+      }
       tempReal2 = 1.5*tempReal;
       if( period > tempReal2)
          period = tempReal2;

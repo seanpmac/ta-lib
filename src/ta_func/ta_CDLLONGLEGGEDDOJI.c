@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -226,15 +227,59 @@ int outInteger[],
    ShadowLongPeriodTotal = 0;
    ShadowLongTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(ShadowLong);
 
-   i = BodyDojiTrailingIdx;
-   while( i < startIdx ) {
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
-        i++;
+   const int bodyDojiStartIdx = BodyDojiTrailingIdx;
+   const int shadowLongStartIdx = ShadowLongTrailingIdx;
+   const int bodyDojiCount = endIdx - BodyDojiTrailingIdx + 1;
+   const int shadowLongCount = endIdx - ShadowLongTrailingIdx + 1;
+   double *bodyDojiRange = NULL;
+   double *shadowLongRange = NULL;
+   int useVectorRanges = 0;
+
+   if( bodyDojiCount > 0 && shadowLongCount > 0 )
+   {
+      bodyDojiRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyDojiCount);
+      shadowLongRange = (double *)TA_Malloc(sizeof(double) * (size_t)shadowLongCount);
+      if( bodyDojiRange && shadowLongRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyDoji],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyDojiStartIdx, bodyDojiCount,
+                              bodyDojiRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_ShadowLong],
+                              inOpen, inHigh, inLow, inClose,
+                              shadowLongStartIdx, shadowLongCount,
+                              shadowLongRange);
+
+         for( i = bodyDojiStartIdx; i < startIdx; ++i )
+            BodyDojiPeriodTotal += bodyDojiRange[i - bodyDojiStartIdx];
+         for( i = shadowLongStartIdx; i < startIdx; ++i )
+            ShadowLongPeriodTotal += shadowLongRange[i - shadowLongStartIdx];
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyDojiRange )
+            TA_Free(bodyDojiRange);
+         if( shadowLongRange )
+            TA_Free(shadowLongRange);
+         bodyDojiRange = NULL;
+         shadowLongRange = NULL;
+      }
    }
-   i = ShadowLongTrailingIdx;
-   while( i < startIdx ) {
-        ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyDojiTrailingIdx;
+      while( i < startIdx ) {
+           BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
+           i++;
+      }
+      i = ShadowLongTrailingIdx;
+      while( i < startIdx ) {
+           ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i );
+           i++;
+      }
    }
 
    /* Proceed with the calculation for the requested range.
@@ -245,6 +290,7 @@ int outInteger[],
     * The meaning of "doji" is specified with TA_SetCandleSettings
     * outInteger is always positive (1 to 100) but this does not mean it is bullish: long legged doji shows uncertainty
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -260,8 +306,18 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
-        ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i ) - TA_CANDLERANGE( ShadowLong, ShadowLongTrailingIdx );
+        if( useVectorRanges )
+        {
+            BodyDojiPeriodTotal += bodyDojiRange[i - bodyDojiStartIdx]
+                                 - bodyDojiRange[BodyDojiTrailingIdx - bodyDojiStartIdx];
+            ShadowLongPeriodTotal += shadowLongRange[i - shadowLongStartIdx]
+                                   - shadowLongRange[ShadowLongTrailingIdx - shadowLongStartIdx];
+        }
+        else
+        {
+            BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
+            ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i ) - TA_CANDLERANGE( ShadowLong, ShadowLongTrailingIdx );
+        }
         i++;
         BodyDojiTrailingIdx++;
         ShadowLongTrailingIdx++;
@@ -270,6 +326,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyDojiRange);
+      TA_Free(shadowLongRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

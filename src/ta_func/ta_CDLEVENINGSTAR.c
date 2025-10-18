@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -251,16 +252,63 @@ int outInteger[],
    BodyLongTrailingIdx = startIdx -2 - TA_CANDLEAVGPERIOD(BodyLong);
    BodyShortTrailingIdx = startIdx -1 - TA_CANDLEAVGPERIOD(BodyShort);
 
-   i = BodyLongTrailingIdx;
-   while( i < startIdx-2 ) {
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
-        i++;
+   const int bodyLongStartIdx = BodyLongTrailingIdx;
+   const int bodyShortStartIdx = BodyShortTrailingIdx;
+   const int bodyLongCount = endIdx - BodyLongTrailingIdx + 1;
+   const int bodyShortCount = endIdx - BodyShortTrailingIdx + 2;
+   double *bodyLongRange = NULL;
+   double *bodyShortRange = NULL;
+   int useVectorRanges = 0;
+
+   if( bodyLongCount > 0 && bodyShortCount > 0 )
+   {
+      bodyLongRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyLongCount);
+      bodyShortRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyShortCount);
+      if( bodyLongRange && bodyShortRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyLong],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyLongStartIdx, bodyLongCount,
+                              bodyLongRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyShort],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyShortStartIdx - 1, bodyShortCount,
+                              bodyShortRange);
+
+         for( i = bodyLongStartIdx; i < startIdx-2; ++i )
+            BodyLongPeriodTotal += bodyLongRange[i - bodyLongStartIdx];
+         for( i = bodyShortStartIdx; i < startIdx-1; ++i )
+         {
+            BodyShortPeriodTotal += bodyShortRange[(i) - (bodyShortStartIdx - 1)];
+            BodyShortPeriodTotal2 += bodyShortRange[(i+1) - (bodyShortStartIdx - 1)];
+         }
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyLongRange )
+            TA_Free(bodyLongRange);
+         if( bodyShortRange )
+            TA_Free(bodyShortRange);
+         bodyLongRange = NULL;
+         bodyShortRange = NULL;
+      }
    }
-   i = BodyShortTrailingIdx;
-   while( i < startIdx-1 ) {
-        BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i );
-        BodyShortPeriodTotal2 += TA_CANDLERANGE( BodyShort, i+1 );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyLongTrailingIdx;
+      while( i < startIdx-2 ) {
+           BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
+           i++;
+      }
+      i = BodyShortTrailingIdx;
+      while( i < startIdx-1 ) {
+           BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i );
+           BodyShortPeriodTotal2 += TA_CANDLERANGE( BodyShort, i+1 );
+           i++;
+      }
    }
    i = startIdx;
 
@@ -277,6 +325,7 @@ int outInteger[],
     * the user should consider that an evening star is significant when it appears in an uptrend,
     * while this function does not consider the trend
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -295,9 +344,21 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i-2 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
-        BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i-1 ) - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx );
-        BodyShortPeriodTotal2 += TA_CANDLERANGE( BodyShort, i ) - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx+1 );
+        if( useVectorRanges )
+        {
+            BodyLongPeriodTotal += bodyLongRange[(i-2) - bodyLongStartIdx]
+                                 - bodyLongRange[BodyLongTrailingIdx - bodyLongStartIdx];
+            BodyShortPeriodTotal += bodyShortRange[(i-1) - (bodyShortStartIdx - 1)]
+                                  - bodyShortRange[BodyShortTrailingIdx - (bodyShortStartIdx - 1)];
+            BodyShortPeriodTotal2 += bodyShortRange[i - (bodyShortStartIdx - 1)]
+                                   - bodyShortRange[(BodyShortTrailingIdx + 1) - (bodyShortStartIdx - 1)];
+        }
+        else
+        {
+            BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i-2 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
+            BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i-1 ) - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx );
+            BodyShortPeriodTotal2 += TA_CANDLERANGE( BodyShort, i ) - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx+1 );
+        }
         i++;
         BodyLongTrailingIdx++;
         BodyShortTrailingIdx++;
@@ -306,6 +367,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyLongRange);
+      TA_Free(bodyShortRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

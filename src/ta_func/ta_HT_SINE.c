@@ -79,6 +79,10 @@
 /* Generated */    #include "ta_memory.h"
 /* Generated */ #endif
 /* Generated */ 
+/* Generated */ #ifndef TA_HILBERT_TRIG_H
+/* Generated */    #include "ta_hilbert_trig.h"
+/* Generated */ #endif
+/* Generated */ 
 /* Generated */ #define TA_PREFIX(x) TA_##x
 /* Generated */ #define INPUT_TYPE   double
 /* Generated */ 
@@ -244,6 +248,9 @@ double outLeadSine[],
 
    /* Insert TA function code here. */
 
+   /* Initialize trigonometric lookup tables for Hilbert Transform */
+   TA_HT_InitTrigTables();
+
    CIRCBUF_INIT_LOCAL_ONLY(smoothPrice,double);
 
    /* The following could be replaced by constant eventually. */
@@ -350,6 +357,7 @@ double outLeadSine[],
     * in this package.
     */
    DCPhase = 0.0;
+   int isEven = ((today & 1) == 0);
    while( today <= endIdx )
    {
       adjustedPrevPeriod = (0.075*period)+0.54;
@@ -362,7 +370,7 @@ double outLeadSine[],
        */
       smoothPrice[smoothPrice_Idx] = smoothedValue;
 
-      if( (today%2) == 0 )
+      if( isEven )
       {
          /* Do the Hilbert Transforms for even price bar */
          DO_HILBERT_EVEN(detrender,smoothedValue);
@@ -412,7 +420,14 @@ double outLeadSine[],
       prevI2 = I2;
       tempReal = period;
       if( (Im != 0.0) && (Re != 0.0) )
-         period = 360.0 / (std_atan(Im/Re)*rad2Deg);
+      {
+         double phi = std_atan2(Im, Re);
+         if( phi > (PI*0.5) )
+            phi -= PI;
+         else if( phi < -(PI*0.5) )
+            phi += PI;
+         period = 360.0 / (phi*rad2Deg);
+      }
       tempReal2 = 1.5*tempReal;
       if( period > tempReal2)
          period = tempReal2;
@@ -433,25 +448,20 @@ double outLeadSine[],
       realPart = 0.0;
       imagPart = 0.0;
 
-      /* idx is used to iterate for up to 50 of the last
-       * value of smoothPrice.
-       */
-      idx = smoothPrice_Idx;
-      for( i=0; i < DCPeriodInt; i++ )
-      {
-         tempReal  = ((double)i*constDeg2RadBy360)/(double)DCPeriodInt;
-         tempReal2 = smoothPrice[idx];
-         realPart += std_sin(tempReal)*tempReal2;
-         imagPart += std_cos(tempReal)*tempReal2;
-         if( idx == 0 )
-            idx = SMOOTH_PRICE_SIZE-1;
-         else
-            idx--;
-      }
+      /* Use optimized DFT accumulation with pre-computed trig tables */
+      TA_HT_AccumulateDFT(smoothPrice, SMOOTH_PRICE_SIZE, smoothPrice_Idx,
+                          DCPeriodInt, &realPart, &imagPart);
 
       tempReal = std_fabs(imagPart);
       if( tempReal > 0.0 )
-         DCPhase = std_atan(realPart/imagPart)*rad2Deg;
+      {
+         double phase = std_atan2(realPart, imagPart);
+         if( phase > (PI*0.5) )
+            phase -= PI;
+         else if( phase < -(PI*0.5) )
+            phase += PI;
+         DCPhase = phase*rad2Deg;
+      }
       else if( tempReal <= 0.01 )
       {
          if( realPart < 0.0 )
@@ -477,6 +487,7 @@ double outLeadSine[],
       /* Ooof... let's do the next price bar now! */
       CIRCBUF_NEXT(smoothPrice);
       today++;
+      isEven = !isEven;
    }
 
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;

@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -226,15 +227,59 @@ int outInteger[],
    ShadowVeryShortPeriodTotal = 0;
    ShadowVeryShortTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(ShadowVeryShort);
 
-   i = BodyDojiTrailingIdx;
-   while( i < startIdx ) {
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
-        i++;
+   const int bodyDojiStartIdx = BodyDojiTrailingIdx;
+   const int shadowVeryShortStartIdx = ShadowVeryShortTrailingIdx;
+   const int bodyDojiCount = endIdx - BodyDojiTrailingIdx + 1;
+   const int shadowVeryShortCount = endIdx - ShadowVeryShortTrailingIdx + 1;
+   double *bodyDojiRange = NULL;
+   double *shadowVeryShortRange = NULL;
+   int useVectorRanges = 0;
+
+   if( bodyDojiCount > 0 && shadowVeryShortCount > 0 )
+   {
+      bodyDojiRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyDojiCount);
+      shadowVeryShortRange = (double *)TA_Malloc(sizeof(double) * (size_t)shadowVeryShortCount);
+      if( bodyDojiRange && shadowVeryShortRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyDoji],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyDojiStartIdx, bodyDojiCount,
+                              bodyDojiRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_ShadowVeryShort],
+                              inOpen, inHigh, inLow, inClose,
+                              shadowVeryShortStartIdx, shadowVeryShortCount,
+                              shadowVeryShortRange);
+
+         for( i = bodyDojiStartIdx; i < startIdx; ++i )
+            BodyDojiPeriodTotal += bodyDojiRange[i - bodyDojiStartIdx];
+         for( i = shadowVeryShortStartIdx; i < startIdx; ++i )
+            ShadowVeryShortPeriodTotal += shadowVeryShortRange[i - shadowVeryShortStartIdx];
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyDojiRange )
+            TA_Free(bodyDojiRange);
+         if( shadowVeryShortRange )
+            TA_Free(shadowVeryShortRange);
+         bodyDojiRange = NULL;
+         shadowVeryShortRange = NULL;
+      }
    }
-   i = ShadowVeryShortTrailingIdx;
-   while( i < startIdx ) {
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyDojiTrailingIdx;
+      while( i < startIdx ) {
+           BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
+           i++;
+      }
+      i = ShadowVeryShortTrailingIdx;
+      while( i < startIdx ) {
+           ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i );
+           i++;
+      }
    }
 
    /* Proceed with the calculation for the requested range.
@@ -247,6 +292,7 @@ int outInteger[],
     * outInteger is always positive (1 to 100) but this does not mean it is bullish: dragonfly doji must be considered
     * relatively to the trend
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -261,9 +307,19 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i )
-                                    - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx );
+        if( useVectorRanges )
+        {
+            BodyDojiPeriodTotal += bodyDojiRange[i - bodyDojiStartIdx]
+                                 - bodyDojiRange[BodyDojiTrailingIdx - bodyDojiStartIdx];
+            ShadowVeryShortPeriodTotal += shadowVeryShortRange[i - shadowVeryShortStartIdx]
+                                         - shadowVeryShortRange[ShadowVeryShortTrailingIdx - shadowVeryShortStartIdx];
+        }
+        else
+        {
+            BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
+            ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i )
+                                        - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx );
+        }
         i++;
         BodyDojiTrailingIdx++;
         ShadowVeryShortTrailingIdx++;
@@ -272,6 +328,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyDojiRange);
+      TA_Free(shadowVeryShortRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

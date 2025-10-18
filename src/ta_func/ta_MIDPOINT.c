@@ -178,6 +178,7 @@ double outReal[],
    double lowest, highest, tmp;
    int outIdx, nbInitialElementNeeded;
    int trailingIdx, today, i;
+   int lowestIdx, highestIdx;
 
 /**** START GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 /* Generated */ 
@@ -247,20 +248,64 @@ double outReal[],
     */
    outIdx = 0;
    today       = startIdx;
-   trailingIdx = startIdx-nbInitialElementNeeded;
+   trailingIdx = startIdx - nbInitialElementNeeded;
+   lowestIdx   = trailingIdx - 1;
+   highestIdx  = trailingIdx - 1;
 
    while( today <= endIdx )
    {
-      lowest  = inReal[trailingIdx++];
-      highest = lowest;
-      for( i=trailingIdx; i <= today; i++ )
+      if( lowestIdx < trailingIdx )
       {
-         tmp = inReal[i];
-         if( tmp < lowest ) lowest= tmp;
-         else if( tmp > highest) highest = tmp;
+         lowestIdx = trailingIdx;
+         lowest = inReal[lowestIdx];
+         i = lowestIdx;
+         while( ++i <= today )
+         {
+            tmp = inReal[i];
+            if( tmp < lowest )
+            {
+               lowest = tmp;
+               lowestIdx = i;
+            }
+         }
+      }
+      else
+      {
+         tmp = inReal[today];
+         if( tmp <= lowest )
+         {
+            lowest = tmp;
+            lowestIdx = today;
+         }
       }
 
-      outReal[outIdx++] = (highest+lowest)/2.0;
+      if( highestIdx < trailingIdx )
+      {
+         highestIdx = trailingIdx;
+         highest = inReal[highestIdx];
+         i = highestIdx;
+         while( ++i <= today )
+         {
+            tmp = inReal[i];
+            if( tmp > highest )
+            {
+               highest = tmp;
+               highestIdx = i;
+            }
+         }
+      }
+      else
+      {
+         tmp = inReal[today];
+         if( tmp >= highest )
+         {
+            highest = tmp;
+            highestIdx = today;
+         }
+      }
+
+      outReal[outIdx++] = (highest + lowest) * 0.5;
+      trailingIdx++;
       today++;
    }
 
@@ -323,6 +368,7 @@ double outReal[],
 /* Generated */    double lowest, highest, tmp;
 /* Generated */    int outIdx, nbInitialElementNeeded;
 /* Generated */    int trailingIdx, today, i;
+/* Generated */    int lowestIdx, highestIdx;
 /* Generated */  #ifndef TA_FUNC_NO_RANGE_CHECK
 /* Generated */     if( startIdx < 0 )
 /* Generated */        return ENUM_VALUE(RetCode,TA_OUT_OF_RANGE_START_INDEX,OutOfRangeStartIndex);
@@ -355,17 +401,60 @@ double outReal[],
 /* Generated */    outIdx = 0;
 /* Generated */    today       = startIdx;
 /* Generated */    trailingIdx = startIdx-nbInitialElementNeeded;
+/* Generated */    lowestIdx   = trailingIdx - 1;
+/* Generated */    highestIdx  = trailingIdx - 1;
 /* Generated */    while( today <= endIdx )
 /* Generated */    {
-/* Generated */       lowest  = inReal[trailingIdx++];
-/* Generated */       highest = lowest;
-/* Generated */       for( i=trailingIdx; i <= today; i++ )
+/* Generated */       if( lowestIdx < trailingIdx )
 /* Generated */       {
-/* Generated */          tmp = inReal[i];
-/* Generated */          if( tmp < lowest ) lowest= tmp;
-/* Generated */          else if( tmp > highest) highest = tmp;
+/* Generated */          lowestIdx = trailingIdx;
+/* Generated */          lowest = (double)inReal[lowestIdx];
+/* Generated */          i = lowestIdx;
+/* Generated */          while( ++i <= today )
+/* Generated */          {
+/* Generated */             tmp = (double)inReal[i];
+/* Generated */             if( tmp < lowest )
+/* Generated */             {
+/* Generated */                lowest = tmp;
+/* Generated */                lowestIdx = i;
+/* Generated */             }
+/* Generated */          }
 /* Generated */       }
-/* Generated */       outReal[outIdx++] = (highest+lowest)/2.0;
+/* Generated */       else
+/* Generated */       {
+/* Generated */          tmp = (double)inReal[today];
+/* Generated */          if( tmp <= lowest )
+/* Generated */          {
+/* Generated */             lowest = tmp;
+/* Generated */             lowestIdx = today;
+/* Generated */          }
+/* Generated */       }
+/* Generated */       if( highestIdx < trailingIdx )
+/* Generated */       {
+/* Generated */          highestIdx = trailingIdx;
+/* Generated */          highest = (double)inReal[highestIdx];
+/* Generated */          i = highestIdx;
+/* Generated */          while( ++i <= today )
+/* Generated */          {
+/* Generated */             tmp = (double)inReal[i];
+/* Generated */             if( tmp > highest )
+/* Generated */             {
+/* Generated */                highest = tmp;
+/* Generated */                highestIdx = i;
+/* Generated */             }
+/* Generated */          }
+/* Generated */       }
+/* Generated */       else
+/* Generated */       {
+/* Generated */          tmp = (double)inReal[today];
+/* Generated */          if( tmp >= highest )
+/* Generated */          {
+/* Generated */             highest = tmp;
+/* Generated */             highestIdx = today;
+/* Generated */          }
+/* Generated */       }
+/* Generated */       outReal[outIdx++] = (highest + lowest) * 0.5;
+/* Generated */       trailingIdx++;
 /* Generated */       today++;
 /* Generated */    }
 /* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;

@@ -85,6 +85,7 @@ message(STATUS "CPACK_GENERATOR: ${CPACK_GENERATOR}")
 # TA-Lib public API headers (will be installed by this script)
 set(LIB_HEADERS
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_abstract.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_batch.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_common.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_defs.h"
 	"${CMAKE_CURRENT_SOURCE_DIR}/include/ta_func.h"
@@ -96,6 +97,7 @@ set(COMMON_SOURCES
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_global.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_retcode.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_version.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/ta_common/ta_batch.c"
 )
 
 # TA-Lib specify all its TA functions signature (and meta information
@@ -402,6 +404,16 @@ endif(MSVC)
 
 target_include_directories(ta-lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(ta-lib-static PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+# Optional OpenMP support for SIMD vectorization and parallel execution
+find_package(OpenMP)
+if(OpenMP_C_FOUND)
+	target_link_libraries(ta-lib PRIVATE OpenMP::OpenMP_C)
+	target_link_libraries(ta-lib-static PRIVATE OpenMP::OpenMP_C)
+	message(STATUS "OpenMP enabled for ta-lib (SIMD and parallel execution support)")
+else()
+	message(STATUS "OpenMP not found - building without SIMD/parallel support")
+endif()
 
 # Install the libraries and headers.
 if(WIN32)

@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -252,17 +253,69 @@ int outInteger[],
    BodyShortTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(BodyShort);
    BodyLongTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(BodyLong);
 
-   i = BodyShortTrailingIdx;
-   while( i < startIdx ) {
-        BodyPeriodTotal[3] += TA_CANDLERANGE( BodyShort, i-3 );
-        BodyPeriodTotal[2] += TA_CANDLERANGE( BodyShort, i-2 );
-        BodyPeriodTotal[1] += TA_CANDLERANGE( BodyShort, i-1 );
-        i++;
+   const int bodyShortRangeStartIdx = BodyShortTrailingIdx - 3;
+   const int bodyShortRangeEndIdx = endIdx - 1;
+   const int bodyLongRangeStartIdx = BodyLongTrailingIdx - 4;
+   const int bodyLongRangeEndIdx = endIdx - 4;
+   double *bodyShortRange = NULL;
+   double *bodyLongRange = NULL;
+   int useVectorRanges = 0;
+
+   if( bodyShortRangeStartIdx >= 0 && bodyLongRangeStartIdx >= 0 &&
+       bodyShortRangeEndIdx >= bodyShortRangeStartIdx &&
+       bodyLongRangeEndIdx >= bodyLongRangeStartIdx )
+   {
+      const int bodyShortRangeCount = bodyShortRangeEndIdx - bodyShortRangeStartIdx + 1;
+      const int bodyLongRangeCount = bodyLongRangeEndIdx - bodyLongRangeStartIdx + 1;
+      bodyShortRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyShortRangeCount);
+      bodyLongRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyLongRangeCount);
+      if( bodyShortRange && bodyLongRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyShort],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyShortRangeStartIdx, bodyShortRangeCount,
+                              bodyShortRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyLong],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyLongRangeStartIdx, bodyLongRangeCount,
+                              bodyLongRange);
+
+         for( i = BodyShortTrailingIdx; i < startIdx; ++i )
+         {
+            BodyPeriodTotal[3] += bodyShortRange[(i-3) - bodyShortRangeStartIdx];
+            BodyPeriodTotal[2] += bodyShortRange[(i-2) - bodyShortRangeStartIdx];
+            BodyPeriodTotal[1] += bodyShortRange[(i-1) - bodyShortRangeStartIdx];
+         }
+         for( i = BodyLongTrailingIdx; i < startIdx; ++i )
+            BodyPeriodTotal[4] += bodyLongRange[(i-4) - bodyLongRangeStartIdx];
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyShortRange )
+            TA_Free(bodyShortRange);
+         if( bodyLongRange )
+            TA_Free(bodyLongRange);
+         bodyShortRange = NULL;
+         bodyLongRange = NULL;
+      }
    }
-   i = BodyLongTrailingIdx;
-   while( i < startIdx ) {
-        BodyPeriodTotal[4] += TA_CANDLERANGE( BodyLong, i-4 );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyShortTrailingIdx;
+      while( i < startIdx ) {
+           BodyPeriodTotal[3] += TA_CANDLERANGE( BodyShort, i-3 );
+           BodyPeriodTotal[2] += TA_CANDLERANGE( BodyShort, i-2 );
+           BodyPeriodTotal[1] += TA_CANDLERANGE( BodyShort, i-1 );
+           i++;
+      }
+      i = BodyLongTrailingIdx;
+      while( i < startIdx ) {
+           BodyPeriodTotal[4] += TA_CANDLERANGE( BodyLong, i-4 );
+           i++;
+      }
    }
    i = startIdx;
 
@@ -281,6 +334,7 @@ int outInteger[],
     * to specify how much the reaction days should be "higher than the reaction days of the rising three methods")
     * outInteger is positive (1 to 100): mat hold is always bullish
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -316,10 +370,21 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyPeriodTotal[4] += TA_CANDLERANGE( BodyLong, i-4 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx-4 );
-        for (totIdx = 3; totIdx >= 1; --totIdx)
-            BodyPeriodTotal[totIdx] += TA_CANDLERANGE( BodyShort, i-totIdx )
-                                     - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx-totIdx );
+        if( useVectorRanges )
+        {
+            BodyPeriodTotal[4] += bodyLongRange[(i-4) - bodyLongRangeStartIdx]
+                                 - bodyLongRange[(BodyLongTrailingIdx-4) - bodyLongRangeStartIdx];
+            for (totIdx = 3; totIdx >= 1; --totIdx)
+                BodyPeriodTotal[totIdx] += bodyShortRange[(i-totIdx) - bodyShortRangeStartIdx]
+                                          - bodyShortRange[(BodyShortTrailingIdx-totIdx) - bodyShortRangeStartIdx];
+        }
+        else
+        {
+            BodyPeriodTotal[4] += TA_CANDLERANGE( BodyLong, i-4 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx-4 );
+            for (totIdx = 3; totIdx >= 1; --totIdx)
+                BodyPeriodTotal[totIdx] += TA_CANDLERANGE( BodyShort, i-totIdx )
+                                         - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx-totIdx );
+        }
         i++;
         BodyShortTrailingIdx++;
         BodyLongTrailingIdx++;
@@ -328,6 +393,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyShortRange);
+      TA_Free(bodyLongRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

@@ -322,6 +322,8 @@ double outQuadrature[],
     * first at the Excel implementation in "test_MAMA.xls" included
     * in this package.
     */
+   int isEven = ((today & 1) == 0);
+
    while( today <= endIdx )
    {
       adjustedPrevPeriod = (0.075*period)+0.54;
@@ -329,7 +331,7 @@ double outQuadrature[],
       todayValue = inReal[today];
       DO_PRICE_WMA(todayValue,smoothedValue);
 
-      if( (today%2) == 0 )
+      if( isEven )
       {
          /* Do the Hilbert Transforms for even price bar */
          DO_HILBERT_EVEN(detrender,smoothedValue);
@@ -390,7 +392,7 @@ double outQuadrature[],
       prevI2 = I2;
       tempReal = period;
       if( (Im != 0.0) && (Re != 0.0) )
-         period = 360.0 / (std_atan(Im/Re)*rad2Deg);
+         period = 360.0 / (std_atan2(Im, Re)*rad2Deg);
       tempReal2 = 1.5*tempReal;
       if( period > tempReal2)
          period = tempReal2;
@@ -405,6 +407,7 @@ double outQuadrature[],
 
       /* Ooof... let's do the next price bar now! */
       today++;
+      isEven = !isEven;
    }
 
    /* Default return values */
@@ -591,7 +594,7 @@ double outQuadrature[],
 /* Generated */       prevI2 = I2;
 /* Generated */       tempReal = period;
 /* Generated */       if( (Im != 0.0) && (Re != 0.0) )
-/* Generated */          period = 360.0 / (std_atan(Im/Re)*rad2Deg);
+/* Generated */          period = 360.0 / (std_atan2(Im, Re)*rad2Deg);
 /* Generated */       tempReal2 = 1.5*tempReal;
 /* Generated */       if( period > tempReal2)
 /* Generated */          period = tempReal2;

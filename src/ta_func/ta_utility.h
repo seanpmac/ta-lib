@@ -176,6 +176,7 @@ void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
    #define std_ceil  Math::Ceiling
    #define std_fabs  Math::Abs
    #define std_atan  Math::Atan
+   #define std_atan2 Math::Atan2
    #define std_cos   Math::Cos
    #define std_sin   Math::Sin
    #define std_sqrt  Math::Sqrt
@@ -193,6 +194,7 @@ void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
    #define std_ceil  Math.ceil
    #define std_fabs  Math.abs
    #define std_atan  Math.atan
+   #define std_atan2 Math.atan2
    #define std_cos   Math.cos
    #define std_sin   Math.sin
    #define std_sqrt  Math.sqrt
@@ -210,6 +212,7 @@ void TA_S_INT_stddev_using_precalc_ma( const float  *inReal,
    #define std_ceil  ceil
    #define std_fabs  fabs
    #define std_atan  atan
+   #define std_atan2 atan2
    #define std_cos   cos
    #define std_sin   sin
    #define std_sqrt  sqrt

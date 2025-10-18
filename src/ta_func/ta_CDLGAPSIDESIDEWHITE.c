@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -226,15 +227,59 @@ int outInteger[],
    NearTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(Near);
    EqualTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(Equal);
 
-   i = NearTrailingIdx;
-   while( i < startIdx ) {
-        NearPeriodTotal += TA_CANDLERANGE( Near, i-1 );
-        i++;
+   const int nearRangeStartIdx = NearTrailingIdx - 1;
+   const int equalRangeStartIdx = EqualTrailingIdx - 1;
+   const int nearRangeCount = (endIdx - 1) - nearRangeStartIdx + 1;
+   const int equalRangeCount = (endIdx - 1) - equalRangeStartIdx + 1;
+   double *nearRange = NULL;
+   double *equalRange = NULL;
+   int useVectorRanges = 0;
+
+   if( nearRangeStartIdx >= 0 && equalRangeStartIdx >= 0 && nearRangeCount > 0 && equalRangeCount > 0 )
+   {
+      nearRange = (double *)TA_Malloc(sizeof(double) * (size_t)nearRangeCount);
+      equalRange = (double *)TA_Malloc(sizeof(double) * (size_t)equalRangeCount);
+      if( nearRange && equalRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_Near],
+                              inOpen, inHigh, inLow, inClose,
+                              nearRangeStartIdx, nearRangeCount,
+                              nearRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_Equal],
+                              inOpen, inHigh, inLow, inClose,
+                              equalRangeStartIdx, equalRangeCount,
+                              equalRange);
+
+         for( i = NearTrailingIdx; i < startIdx; ++i )
+            NearPeriodTotal += nearRange[(i-1) - nearRangeStartIdx];
+         for( i = EqualTrailingIdx; i < startIdx; ++i )
+            EqualPeriodTotal += equalRange[(i-1) - equalRangeStartIdx];
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( nearRange )
+            TA_Free(nearRange);
+         if( equalRange )
+            TA_Free(equalRange);
+         nearRange = NULL;
+         equalRange = NULL;
+      }
    }
-   i = EqualTrailingIdx;
-   while( i < startIdx ) {
-        EqualPeriodTotal += TA_CANDLERANGE( Equal, i-1 );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = NearTrailingIdx;
+      while( i < startIdx ) {
+           NearPeriodTotal += TA_CANDLERANGE( Near, i-1 );
+           i++;
+      }
+      i = EqualTrailingIdx;
+      while( i < startIdx ) {
+           EqualPeriodTotal += TA_CANDLERANGE( Equal, i-1 );
+           i++;
+      }
    }
    i = startIdx;
 
@@ -250,6 +295,7 @@ int outInteger[],
     * or downside gap side-by-side white lines is significant when it appears in a trend, while this function
     * does not consider the trend
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -272,8 +318,18 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        NearPeriodTotal += TA_CANDLERANGE( Near, i-1 ) - TA_CANDLERANGE( Near, NearTrailingIdx-1 );
-        EqualPeriodTotal += TA_CANDLERANGE( Equal, i-1 ) - TA_CANDLERANGE( Equal, EqualTrailingIdx-1 );
+        if( useVectorRanges )
+        {
+            NearPeriodTotal += nearRange[(i-1) - nearRangeStartIdx]
+                              - nearRange[(NearTrailingIdx-1) - nearRangeStartIdx];
+            EqualPeriodTotal += equalRange[(i-1) - equalRangeStartIdx]
+                               - equalRange[(EqualTrailingIdx-1) - equalRangeStartIdx];
+        }
+        else
+        {
+            NearPeriodTotal += TA_CANDLERANGE( Near, i-1 ) - TA_CANDLERANGE( Near, NearTrailingIdx-1 );
+            EqualPeriodTotal += TA_CANDLERANGE( Equal, i-1 ) - TA_CANDLERANGE( Equal, EqualTrailingIdx-1 );
+        }
         i++;
         NearTrailingIdx++;
         EqualTrailingIdx++;
@@ -282,6 +338,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(nearRange);
+      TA_Free(equalRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

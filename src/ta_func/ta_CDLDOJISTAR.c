@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -226,15 +227,77 @@ int outInteger[],
    BodyLongTrailingIdx = startIdx -1 - TA_CANDLEAVGPERIOD(BodyLong);
    BodyDojiTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(BodyDoji);
 
-   i = BodyLongTrailingIdx;
-   while( i < startIdx-1 ) {
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
-        i++;
+   const int bodyLongStartIdx = BodyLongTrailingIdx;
+   const int bodyDojiStartIdx = BodyDojiTrailingIdx;
+   const int bodyLongCount = endIdx - BodyLongTrailingIdx + 1;
+   const int bodyDojiCount = endIdx - BodyDojiTrailingIdx + 1;
+   double *bodyLongRange = NULL;
+   double *bodyDojiRange = NULL;
+   int useVectorRanges = 0;
+   double *bodyLongInitPtr = NULL;
+   double *bodyLongInitEnd = NULL;
+   double *bodyDojiInitPtr = NULL;
+   double *bodyDojiInitEnd = NULL;
+   double *bodyLongLeadPtr = NULL;
+   double *bodyLongTrailPtr = NULL;
+   double *bodyDojiLeadPtr = NULL;
+   double *bodyDojiTrailPtr = NULL;
+
+   if( bodyLongCount > 0 && bodyDojiCount > 0 )
+   {
+      bodyLongRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyLongCount);
+      bodyDojiRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyDojiCount);
+      if( bodyLongRange && bodyDojiRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyLong],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyLongStartIdx, bodyLongCount,
+                              bodyLongRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyDoji],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyDojiStartIdx, bodyDojiCount,
+                              bodyDojiRange);
+
+         bodyLongInitPtr = bodyLongRange;
+         bodyLongInitEnd = bodyLongRange + (startIdx-1 - bodyLongStartIdx);
+         while( bodyLongInitPtr < bodyLongInitEnd )
+            BodyLongPeriodTotal += *bodyLongInitPtr++;
+
+         bodyDojiInitPtr = bodyDojiRange;
+         bodyDojiInitEnd = bodyDojiRange + (startIdx - bodyDojiStartIdx);
+         while( bodyDojiInitPtr < bodyDojiInitEnd )
+            BodyDojiPeriodTotal += *bodyDojiInitPtr++;
+
+         bodyLongLeadPtr = bodyLongRange + ((startIdx-1) - bodyLongStartIdx);
+         bodyLongTrailPtr = bodyLongRange + (BodyLongTrailingIdx - bodyLongStartIdx);
+         bodyDojiLeadPtr = bodyDojiRange + (startIdx - bodyDojiStartIdx);
+         bodyDojiTrailPtr = bodyDojiRange + (BodyDojiTrailingIdx - bodyDojiStartIdx);
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyLongRange )
+            TA_Free(bodyLongRange);
+         if( bodyDojiRange )
+            TA_Free(bodyDojiRange);
+         bodyLongRange = NULL;
+         bodyDojiRange = NULL;
+      }
    }
-   i = BodyDojiTrailingIdx;
-   while( i < startIdx ) {
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyLongTrailingIdx;
+      while( i < startIdx-1 ) {
+           BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
+           i++;
+      }
+      i = BodyDojiTrailingIdx;
+      while( i < startIdx ) {
+           BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
+           i++;
+      }
    }
 
    /* Proceed with the calculation for the requested range.
@@ -248,11 +311,14 @@ int outInteger[],
     * in an uptrend and it's bearish when it appears in a downtrend, so to determine the bullishness or
     * bearishness of the pattern the trend must be analyzed
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
-        if( TA_REALBODY(i-1) > TA_CANDLEAVERAGE( BodyLong, BodyLongPeriodTotal, i-1 ) &&     // 1st: long real body
-            TA_REALBODY(i) <= TA_CANDLEAVERAGE( BodyDoji, BodyDojiPeriodTotal, i ) &&        // 2nd: doji
+        const double realBodyPrev = TA_REALBODY(i-1);
+        const double realBodyCurr = TA_REALBODY(i);
+        if( realBodyPrev > TA_CANDLEAVERAGE( BodyLong, BodyLongPeriodTotal, i-1 ) &&     // 1st: long real body
+            realBodyCurr <= TA_CANDLEAVERAGE( BodyDoji, BodyDojiPeriodTotal, i ) &&        // 2nd: doji
             ( ( TA_CANDLECOLOR(i-1) == 1 && TA_REALBODYGAPUP(i,i-1) )                        //        that gaps up if 1st is white
                 ||
               ( TA_CANDLECOLOR(i-1) == -1 && TA_REALBODYGAPDOWN(i,i-1) )                        //      or down if 1st is black
@@ -264,8 +330,18 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i-1 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
+        if( useVectorRanges )
+       {
+           BodyLongPeriodTotal += *bodyLongLeadPtr++
+                                - *bodyLongTrailPtr++;
+           BodyDojiPeriodTotal += *bodyDojiLeadPtr++
+                                - *bodyDojiTrailPtr++;
+       }
+       else
+       {
+           BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i-1 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
+           BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
+        }
         i++;
         BodyLongTrailingIdx++;
         BodyDojiTrailingIdx++;
@@ -274,6 +350,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyLongRange);
+      TA_Free(bodyDojiRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -226,15 +227,59 @@ int outInteger[],
    ShadowVeryShortPeriodTotal = 0;
    ShadowVeryShortTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(ShadowVeryShort);
 
-   i = BodyLongTrailingIdx;
-   while( i < startIdx ) {
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
-        i++;
+   const int bodyLongStartIdx = BodyLongTrailingIdx;
+   const int shadowVeryShortStartIdx = ShadowVeryShortTrailingIdx;
+   const int bodyLongCount = endIdx - BodyLongTrailingIdx + 1;
+   const int shadowVeryShortCount = endIdx - ShadowVeryShortTrailingIdx + 1;
+   double *bodyLongRange = NULL;
+   double *shadowVeryShortRange = NULL;
+   int useVectorRanges = 0;
+
+   if( bodyLongCount > 0 && shadowVeryShortCount > 0 )
+   {
+      bodyLongRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyLongCount);
+      shadowVeryShortRange = (double *)TA_Malloc(sizeof(double) * (size_t)shadowVeryShortCount);
+      if( bodyLongRange && shadowVeryShortRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyLong],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyLongStartIdx, bodyLongCount,
+                              bodyLongRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_ShadowVeryShort],
+                              inOpen, inHigh, inLow, inClose,
+                              shadowVeryShortStartIdx, shadowVeryShortCount,
+                              shadowVeryShortRange);
+
+         for( i = bodyLongStartIdx; i < startIdx; ++i )
+            BodyLongPeriodTotal += bodyLongRange[i - bodyLongStartIdx];
+         for( i = shadowVeryShortStartIdx; i < startIdx; ++i )
+            ShadowVeryShortPeriodTotal += shadowVeryShortRange[i - shadowVeryShortStartIdx];
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyLongRange )
+            TA_Free(bodyLongRange);
+         if( shadowVeryShortRange )
+            TA_Free(shadowVeryShortRange);
+         bodyLongRange = NULL;
+         shadowVeryShortRange = NULL;
+      }
    }
-   i = ShadowVeryShortTrailingIdx;
-   while( i < startIdx ) {
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyLongTrailingIdx;
+      while( i < startIdx ) {
+           BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
+           i++;
+      }
+      i = ShadowVeryShortTrailingIdx;
+      while( i < startIdx ) {
+           ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i );
+           i++;
+      }
    }
 
    /* Proceed with the calculation for the requested range.
@@ -244,6 +289,7 @@ int outInteger[],
     * The meaning of "long" and "very short" is specified with TA_SetCandleSettings
     * outInteger is positive (1 to 100) when white (bullish), negative (-1 to -100) when black (bearish)
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -256,9 +302,19 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i )
-                                    - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx );
+        if( useVectorRanges )
+        {
+            BodyLongPeriodTotal += bodyLongRange[i - bodyLongStartIdx]
+                                 - bodyLongRange[BodyLongTrailingIdx - bodyLongStartIdx];
+            ShadowVeryShortPeriodTotal += shadowVeryShortRange[i - shadowVeryShortStartIdx]
+                                        - shadowVeryShortRange[ShadowVeryShortTrailingIdx - shadowVeryShortStartIdx];
+        }
+        else
+        {
+            BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
+            ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i )
+                                        - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx );
+        }
         i++;
         BodyLongTrailingIdx++;
         ShadowVeryShortTrailingIdx++;
@@ -267,6 +323,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyLongRange);
+      TA_Free(shadowVeryShortRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

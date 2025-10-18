@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -233,25 +234,128 @@ int outInteger[],
    NearPeriodTotal = 0;
    NearTrailingIdx = startIdx -1 - TA_CANDLEAVGPERIOD(Near);
 
-   i = BodyTrailingIdx;
-   while( i < startIdx ) {
-        BodyPeriodTotal += TA_CANDLERANGE( BodyShort, i );
-        i++;
+   const int bodyStartIdx = BodyTrailingIdx;
+   const int shadowLongStartIdx = ShadowLongTrailingIdx;
+   const int shadowVeryShortStartIdx = ShadowVeryShortTrailingIdx;
+   const int nearStartIdx = NearTrailingIdx;
+   const int bodyCount = endIdx - BodyTrailingIdx + 1;
+   const int shadowLongCount = endIdx - ShadowLongTrailingIdx + 1;
+   const int shadowVeryShortCount = endIdx - ShadowVeryShortTrailingIdx + 1;
+   const int nearCount = (endIdx - 1) - NearTrailingIdx + 1;
+   double *bodyRange = NULL;
+   double *shadowLongRange = NULL;
+   double *shadowVeryShortRange = NULL;
+   double *nearRange = NULL;
+   int useVectorRanges = 0;
+   double *bodyRangeLeadPtr = NULL;
+   double *bodyRangeTrailPtr = NULL;
+   double *shadowLongLeadPtr = NULL;
+   double *shadowLongTrailPtr = NULL;
+   double *shadowVeryShortLeadPtr = NULL;
+   double *shadowVeryShortTrailPtr = NULL;
+   double *nearRangeLeadPtr = NULL;
+   double *nearRangeTrailPtr = NULL;
+
+   if( bodyCount > 0 && shadowLongCount > 0 && shadowVeryShortCount > 0 && nearCount > 0 )
+   {
+      bodyRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyCount);
+      shadowLongRange = (double *)TA_Malloc(sizeof(double) * (size_t)shadowLongCount);
+      shadowVeryShortRange = (double *)TA_Malloc(sizeof(double) * (size_t)shadowVeryShortCount);
+      nearRange = (double *)TA_Malloc(sizeof(double) * (size_t)nearCount);
+      if( bodyRange && shadowLongRange && shadowVeryShortRange && nearRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyShort],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyStartIdx, bodyCount,
+                              bodyRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_ShadowLong],
+                              inOpen, inHigh, inLow, inClose,
+                              shadowLongStartIdx, shadowLongCount,
+                              shadowLongRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_ShadowVeryShort],
+                              inOpen, inHigh, inLow, inClose,
+                              shadowVeryShortStartIdx, shadowVeryShortCount,
+                              shadowVeryShortRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_Near],
+                              inOpen, inHigh, inLow, inClose,
+                              nearStartIdx, nearCount,
+                              nearRange);
+
+         const int bodyInitCount = startIdx - bodyStartIdx;
+         const int shadowLongInitCount = startIdx - shadowLongStartIdx;
+         const int shadowVeryShortInitCount = startIdx - shadowVeryShortStartIdx;
+         const int nearInitCount = (startIdx - 1) - nearStartIdx;
+
+          double *bodyInitPtr = bodyRange;
+         double *bodyInitEnd = bodyRange + bodyInitCount;
+         while( bodyInitPtr < bodyInitEnd )
+            BodyPeriodTotal += *bodyInitPtr++;
+
+         double *shadowLongInitPtr = shadowLongRange;
+         double *shadowLongInitEnd = shadowLongRange + shadowLongInitCount;
+         while( shadowLongInitPtr < shadowLongInitEnd )
+            ShadowLongPeriodTotal += *shadowLongInitPtr++;
+
+         double *shadowVeryShortInitPtr = shadowVeryShortRange;
+         double *shadowVeryShortInitEnd = shadowVeryShortRange + shadowVeryShortInitCount;
+         while( shadowVeryShortInitPtr < shadowVeryShortInitEnd )
+            ShadowVeryShortPeriodTotal += *shadowVeryShortInitPtr++;
+
+         double *nearInitPtr = nearRange;
+         double *nearInitEnd = nearRange + nearInitCount;
+         while( nearInitPtr < nearInitEnd )
+            NearPeriodTotal += *nearInitPtr++;
+
+         bodyRangeLeadPtr = bodyRange + (startIdx - bodyStartIdx);
+         bodyRangeTrailPtr = bodyRange + (BodyTrailingIdx - bodyStartIdx);
+         shadowLongLeadPtr = shadowLongRange + (startIdx - shadowLongStartIdx);
+         shadowLongTrailPtr = shadowLongRange + (ShadowLongTrailingIdx - shadowLongStartIdx);
+         shadowVeryShortLeadPtr = shadowVeryShortRange + (startIdx - shadowVeryShortStartIdx);
+         shadowVeryShortTrailPtr = shadowVeryShortRange + (ShadowVeryShortTrailingIdx - shadowVeryShortStartIdx);
+         nearRangeLeadPtr = nearRange + ((startIdx - 1) - nearStartIdx);
+         nearRangeTrailPtr = nearRange + (NearTrailingIdx - nearStartIdx);
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyRange )
+            TA_Free(bodyRange);
+         if( shadowLongRange )
+            TA_Free(shadowLongRange);
+         if( shadowVeryShortRange )
+            TA_Free(shadowVeryShortRange);
+         if( nearRange )
+            TA_Free(nearRange);
+         bodyRange = NULL;
+         shadowLongRange = NULL;
+         shadowVeryShortRange = NULL;
+         nearRange = NULL;
+      }
    }
-   i = ShadowLongTrailingIdx;
-   while( i < startIdx ) {
-        ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i );
-        i++;
-   }
-   i = ShadowVeryShortTrailingIdx;
-   while( i < startIdx ) {
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i );
-        i++;
-   }
-   i = NearTrailingIdx;
-   while( i < startIdx-1 ) {
-        NearPeriodTotal += TA_CANDLERANGE( Near, i );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyTrailingIdx;
+      while( i < startIdx ) {
+           BodyPeriodTotal += TA_CANDLERANGE( BodyShort, i );
+           i++;
+      }
+      i = ShadowLongTrailingIdx;
+      while( i < startIdx ) {
+           ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i );
+           i++;
+      }
+      i = ShadowVeryShortTrailingIdx;
+      while( i < startIdx ) {
+           ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i );
+           i++;
+      }
+      i = NearTrailingIdx;
+      while( i < startIdx-1 ) {
+           NearPeriodTotal += TA_CANDLERANGE( Near, i );
+           i++;
+      }
    }
    i = startIdx;
 
@@ -265,6 +369,7 @@ int outInteger[],
     * outInteger is positive (1 to 100): hammer is always bullish;
     * the user should consider that a hammer must appear in a downtrend, while this function does not consider it
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -279,14 +384,24 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyPeriodTotal += TA_CANDLERANGE( BodyShort, i )
-            - TA_CANDLERANGE( BodyShort, BodyTrailingIdx );
-        ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i )
-            - TA_CANDLERANGE( ShadowLong, ShadowLongTrailingIdx );
-        ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i )
-            - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx );
-        NearPeriodTotal += TA_CANDLERANGE( Near, i-1 )
-            - TA_CANDLERANGE( Near, NearTrailingIdx );
+        if( useVectorRanges )
+        {
+            BodyPeriodTotal += *bodyRangeLeadPtr++ - *bodyRangeTrailPtr++;
+            ShadowLongPeriodTotal += *shadowLongLeadPtr++ - *shadowLongTrailPtr++;
+            ShadowVeryShortPeriodTotal += *shadowVeryShortLeadPtr++ - *shadowVeryShortTrailPtr++;
+            NearPeriodTotal += *nearRangeLeadPtr++ - *nearRangeTrailPtr++;
+        }
+        else
+        {
+            BodyPeriodTotal += TA_CANDLERANGE( BodyShort, i )
+                - TA_CANDLERANGE( BodyShort, BodyTrailingIdx );
+            ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i )
+                - TA_CANDLERANGE( ShadowLong, ShadowLongTrailingIdx );
+            ShadowVeryShortPeriodTotal += TA_CANDLERANGE( ShadowVeryShort, i )
+                - TA_CANDLERANGE( ShadowVeryShort, ShadowVeryShortTrailingIdx );
+            NearPeriodTotal += TA_CANDLERANGE( Near, i-1 )
+                - TA_CANDLERANGE( Near, NearTrailingIdx );
+        }
         i++;
         BodyTrailingIdx++;
         ShadowLongTrailingIdx++;
@@ -297,6 +412,14 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyRange);
+      TA_Free(shadowLongRange);
+      TA_Free(shadowVeryShortRange);
+      TA_Free(nearRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }
@@ -421,9 +544,9 @@ int outInteger[],
 /* Generated */             TA_UPPERSHADOW(i) < TA_CANDLEAVERAGE( ShadowVeryShort, ShadowVeryShortPeriodTotal, i ) &&    // very short upper shadow
 /* Generated */             min( inClose[i], inOpen[i] ) <= inLow[i-1] + TA_CANDLEAVERAGE( Near, NearPeriodTotal, i-1 )  // rb near the prior candle's lows
 /* Generated */           )
-/* Generated */             outInteger[outIdx++] = 100;
+/* Generated */            outInteger[outIdx++] = 100;
 /* Generated */         else
-/* Generated */             outInteger[outIdx++] = 0;
+/* Generated */            outInteger[outIdx++] = 0;
 /* Generated */         BodyPeriodTotal += TA_CANDLERANGE( BodyShort, i )
 /* Generated */             - TA_CANDLERANGE( BodyShort, BodyTrailingIdx );
 /* Generated */         ShadowLongPeriodTotal += TA_CANDLERANGE( ShadowLong, i )
@@ -438,8 +561,10 @@ int outInteger[],
 /* Generated */         ShadowVeryShortTrailingIdx++;
 /* Generated */         NearTrailingIdx++;
 /* Generated */    } while( i <= endIdx );
+/* Generated */
 /* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
 /* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+/* Generated */
 /* Generated */    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 /* Generated */ }
 /* Generated */ 

@@ -66,6 +66,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_vec_math.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -191,10 +192,10 @@ double outReal[],
 
    /* Insert TA function code here. */
 
-   for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
-   {
-      outReal[outIdx] = inReal0[i]/inReal1[i];
-   }
+   const int count = endIdx - startIdx + 1;
+   TA_VEC_DivD(inReal0 + startIdx, inReal1 + startIdx, outReal, count);
+
+   outIdx = count;
 
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
@@ -268,10 +269,10 @@ double outReal[],
 /* Generated */     #endif 
 /* Generated */  #endif
 /* Generated */  #endif 
-/* Generated */    for( i=startIdx, outIdx=0; i <= endIdx; i++, outIdx++ )
-/* Generated */    {
-/* Generated */       outReal[outIdx] = inReal0[i]/inReal1[i];
-/* Generated */    }
+/* Generated */    const int count = endIdx - startIdx + 1;
+/* Generated */    TA_VEC_DivF(inReal0 + startIdx, inReal1 + startIdx, outReal, count);
+/* Generated */
+/* Generated */    outIdx = count;
 /* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
 /* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
 /* Generated */    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);

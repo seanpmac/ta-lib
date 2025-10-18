@@ -173,8 +173,12 @@ double outReal[],
 /**** END GENCODE SECTION 3 - DO NOT DELETE THIS LINE ****/
 {
 	/* insert local variable here */
-   double periodTotal, tempReal;
-   int i, outIdx, trailingIdx, lookbackTotal;
+   int trailingIdx, lookbackTotal;
+   int totalCount, outCount, idx;
+   double running;
+   const double *input;
+   double *windowEnd;
+   ARRAY_REF(prefixBuffer);
 
 /**** START GENCODE SECTION 4 - DO NOT DELETE THIS LINE ****/
 /* Generated */ 
@@ -229,34 +233,45 @@ double outReal[],
       return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
    }
 
-   /* Do the MA calculation using tight loops. */
+   trailingIdx = startIdx - lookbackTotal;
 
-   /* Add-up the initial period, except for the last value. */
-   periodTotal = 0;
-   trailingIdx = startIdx-lookbackTotal;
+   totalCount = endIdx - trailingIdx + 1;
+   ARRAY_ALLOC(prefixBuffer, totalCount);
 
-   i=trailingIdx;
-   if( optInTimePeriod > 1 )
+#if !defined( _JAVA ) && !defined( USE_SUBARRAY )
+   if( !prefixBuffer )
    {
-      while( i < startIdx )
-         periodTotal += inReal[i++];
+      VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
+      VALUE_HANDLE_DEREF_TO_ZERO(outBegIdx);
+      return ENUM_VALUE(RetCode,TA_ALLOC_ERR,AllocErr);
+   }
+#endif
+
+   input = inReal + trailingIdx;
+   running = 0.0;
+   for( idx = 0; idx < totalCount; ++idx )
+   {
+      running += input[idx];
+      prefixBuffer[idx] = running;
    }
 
-   /* Proceed with the calculation for the requested range.
-    * Note that this algorithm allows the inReal and
-    * outReal to be the same buffer.
-    */
-   outIdx = 0;
-   do
+   outCount = endIdx - startIdx + 1;
+   windowEnd = prefixBuffer + (optInTimePeriod - 1);
+
+   outReal[0] = windowEnd[0];
+
+#if defined(_OPENMP)
+   #pragma omp simd
+#endif
+   for( idx = 1; idx < outCount; ++idx )
    {
-      periodTotal += inReal[i++];
-      tempReal = periodTotal;
-      periodTotal -= inReal[trailingIdx++];
-      outReal[outIdx++] = tempReal;
-   } while( i <= endIdx );
+      outReal[idx] = windowEnd[idx] - prefixBuffer[idx - 1];
+   }
+
+   ARRAY_FREE(prefixBuffer);
 
    /* All done. Indicate the output limits and return. */
-   VALUE_HANDLE_DEREF(outNBElement) = outIdx;
+   VALUE_HANDLE_DEREF(outNBElement) = outCount;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
@@ -309,8 +324,12 @@ double outReal[],
 /* Generated */                      double        outReal[] )
 /* Generated */ #endif
 /* Generated */ {
-/* Generated */    double periodTotal, tempReal;
-/* Generated */    int i, outIdx, trailingIdx, lookbackTotal;
+/* Generated */    int trailingIdx, lookbackTotal;
+/* Generated */    int totalCount, outCount, idx;
+/* Generated */    double running;
+/* Generated */    const float *input;
+/* Generated */    double *windowEnd;
+/* Generated */    ARRAY_REF(prefixBuffer);
 /* Generated */  #ifndef TA_FUNC_NO_RANGE_CHECK
 /* Generated */     if( startIdx < 0 )
 /* Generated */        return ENUM_VALUE(RetCode,TA_OUT_OF_RANGE_START_INDEX,OutOfRangeStartIndex);
@@ -340,23 +359,41 @@ double outReal[],
 /* Generated */       VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
 /* Generated */       return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 /* Generated */    }
-/* Generated */    periodTotal = 0;
-/* Generated */    trailingIdx = startIdx-lookbackTotal;
-/* Generated */    i=trailingIdx;
-/* Generated */    if( optInTimePeriod > 1 )
+/* Generated */    trailingIdx = startIdx - lookbackTotal;
+/* Generated */    totalCount = endIdx - trailingIdx + 1;
+/* Generated */    ARRAY_ALLOC(prefixBuffer, totalCount);
+/* Generated */
+/* Generated */ #if !defined( _JAVA ) && !defined( USE_SUBARRAY )
+/* Generated */    if( !prefixBuffer )
 /* Generated */    {
-/* Generated */       while( i < startIdx )
-/* Generated */          periodTotal += inReal[i++];
+/* Generated */       VALUE_HANDLE_DEREF_TO_ZERO(outNBElement);
+/* Generated */       VALUE_HANDLE_DEREF_TO_ZERO(outBegIdx);
+/* Generated */       return ENUM_VALUE(RetCode,TA_ALLOC_ERR,AllocErr);
 /* Generated */    }
-/* Generated */    outIdx = 0;
-/* Generated */    do
+/* Generated */ #endif
+/* Generated */
+/* Generated */    input = inReal + trailingIdx;
+/* Generated */    running = 0.0;
+/* Generated */    for( idx = 0; idx < totalCount; ++idx )
 /* Generated */    {
-/* Generated */       periodTotal += inReal[i++];
-/* Generated */       tempReal = periodTotal;
-/* Generated */       periodTotal -= inReal[trailingIdx++];
-/* Generated */       outReal[outIdx++] = tempReal;
-/* Generated */    } while( i <= endIdx );
-/* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
+/* Generated */       running += (double)input[idx];
+/* Generated */       prefixBuffer[idx] = running;
+/* Generated */    }
+/* Generated */
+/* Generated */    outCount = endIdx - startIdx + 1;
+/* Generated */    windowEnd = prefixBuffer + (optInTimePeriod - 1);
+/* Generated */    outReal[0] = windowEnd[0];
+/* Generated */
+/* Generated */ #if defined(_OPENMP)
+/* Generated */    #pragma omp simd
+/* Generated */ #endif
+/* Generated */    for( idx = 1; idx < outCount; ++idx )
+/* Generated */    {
+/* Generated */       outReal[idx] = windowEnd[idx] - prefixBuffer[idx - 1];
+/* Generated */    }
+/* Generated */
+/* Generated */    ARRAY_FREE(prefixBuffer);
+/* Generated */    VALUE_HANDLE_DEREF(outNBElement) = outCount;
 /* Generated */    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
 /* Generated */    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 /* Generated */ }

@@ -34,6 +34,7 @@ bin/ta_*
 
 # ta_perf profiling artifacts
 profiling_results/
+benchmarks/
 *baseline.json
 *all_indicators*.json
 

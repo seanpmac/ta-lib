@@ -59,11 +59,14 @@
 /**** Headers ****/
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "ta_test_priv.h"
 #include "ta_memory.h"
 #include "ta_defs.h"
 #include "ta_common.h"
+#include "ta_batch.h"
+#include "ta_vec_math.h"
 
 
 /**** External functions declarations. ****/
@@ -80,6 +83,7 @@
 
 /**** Local functions declarations.    ****/
 static ErrorNumber testCircularBuffer( void );
+static ErrorNumber testParallelVecOps( void );
 
 static TA_RetCode circBufferFillFrom0ToSize( int size, int *buffer );
 
@@ -103,6 +107,13 @@ ErrorNumber test_internals( void )
       printf( "\nFailed: Circular buffer tests (%d)\n", retValue );
       return retValue;
    }
+
+   retValue = testParallelVecOps();
+    if( retValue != TA_TEST_PASS )
+    {
+       printf( "\nFailed: Parallel vector tests (%d)\n", retValue );
+       return retValue;
+    }
 
    return TA_TEST_PASS; /* Success. */
 }
@@ -271,4 +282,159 @@ static TA_RetCode circBufferFillFrom0ToSize( int size, int *buffer )
    CIRCBUF_DESTROY(MyBuf);
 
    return TA_SUCCESS;
+}
+
+static int almostEqual(double a, double b)
+{
+   const double diff = fabs(a - b);
+   const double scale = fmax(fabs(a), fabs(b));
+   const double tol = 1e-12 * (scale > 1.0 ? scale : 1.0);
+   return diff <= tol;
+}
+
+static ErrorNumber testParallelVecOps( void )
+{
+   static const int counts[] = { 5, 10000, 35000 };
+   const size_t numCounts = sizeof(counts) / sizeof(counts[0]);
+   ErrorNumber retValue;
+
+   retValue = allocLib();
+   if( retValue != TA_TEST_PASS )
+   {
+      printf( "\nFailed: Can't initialize the library\n" );
+      return retValue;
+   }
+
+   for( size_t idx = 0; idx < numCounts; ++idx )
+   {
+      const int count = counts[idx];
+      double *a = (double *)TA_Malloc(sizeof(double) * (size_t)count);
+      double *b = (double *)TA_Malloc(sizeof(double) * (size_t)count);
+      double *c = (double *)TA_Malloc(sizeof(double) * (size_t)count);
+      double *destSerial = (double *)TA_Malloc(sizeof(double) * (size_t)count);
+      double *destParallel = (double *)TA_Malloc(sizeof(double) * (size_t)count);
+
+      if( !a || !b || !c || !destSerial || !destParallel )
+      {
+         if( a ) TA_Free(a);
+         if( b ) TA_Free(b);
+         if( c ) TA_Free(c);
+         if( destSerial ) TA_Free(destSerial);
+         if( destParallel ) TA_Free(destParallel);
+         freeLib();
+         return TA_INTERNAL_PARALLEL_VEC_ALLOC_FAILED;
+      }
+
+      for( int i = 0; i < count; ++i )
+      {
+         a[i] = (double)(i + 1) * 1.5;
+         b[i] = (double)((i % 17) + 1) * 0.75;
+         c[i] = (double)((i % 13) - 6) * 0.5;
+      }
+
+      TA_BatchConfig config;
+      TA_BatchConfig_Init(&config);
+      config.numThreads = 0; /* auto */
+      config.schedulePolicy = (idx == 1) ? 1 : ((idx == 2) ? 2 : 0);
+      config.chunkSize = (idx == 0) ? 0 : (idx == 1 ? 257 : 0);
+
+      /* Addition */
+      TA_VEC_AddD(a, b, destSerial, count);
+      memset(destParallel, 0, sizeof(double) * (size_t)count);
+      TA_ParallelVecAdd(a, b, destParallel, count, &config);
+      for( int i = 0; i < count; ++i )
+      {
+         if( !almostEqual(destSerial[i], destParallel[i]) )
+         {
+            TA_Free(a);
+            TA_Free(b);
+            TA_Free(destSerial);
+            TA_Free(destParallel);
+            freeLib();
+            return TA_INTERNAL_PARALLEL_VEC_ADD_MISMATCH;
+         }
+      }
+
+      /* Subtraction */
+      TA_VEC_SubD(a, b, destSerial, count);
+      memset(destParallel, 0, sizeof(double) * (size_t)count);
+      TA_ParallelVecSub(a, b, destParallel, count, &config);
+      for( int i = 0; i < count; ++i )
+      {
+         if( !almostEqual(destSerial[i], destParallel[i]) )
+         {
+            TA_Free(a);
+            TA_Free(b);
+            TA_Free(destSerial);
+            TA_Free(destParallel);
+            freeLib();
+            return TA_INTERNAL_PARALLEL_VEC_SUB_MISMATCH;
+         }
+      }
+
+      /* Multiplication */
+      TA_VEC_MulD(a, b, destSerial, count);
+      memset(destParallel, 0, sizeof(double) * (size_t)count);
+      TA_ParallelVecMul(a, b, destParallel, count, &config);
+      for( int i = 0; i < count; ++i )
+      {
+         if( !almostEqual(destSerial[i], destParallel[i]) )
+         {
+            TA_Free(a);
+            TA_Free(b);
+            TA_Free(destSerial);
+            TA_Free(destParallel);
+            freeLib();
+            return TA_INTERNAL_PARALLEL_VEC_MUL_MISMATCH;
+         }
+      }
+
+      /* Division */
+      TA_VEC_DivD(a, b, destSerial, count);
+      memset(destParallel, 0, sizeof(double) * (size_t)count);
+      TA_ParallelVecDiv(a, b, destParallel, count, &config);
+      for( int i = 0; i < count; ++i )
+      {
+         if( !almostEqual(destSerial[i], destParallel[i]) )
+         {
+            TA_Free(a);
+            TA_Free(b);
+            TA_Free(c);
+            TA_Free(destSerial);
+            TA_Free(destParallel);
+            freeLib();
+            return TA_INTERNAL_PARALLEL_VEC_DIV_MISMATCH;
+         }
+      }
+
+      /* Fused multiply-add */
+      TA_VEC_FmaD(a, b, c, destSerial, count);
+      memset(destParallel, 0, sizeof(double) * (size_t)count);
+      TA_ParallelVecFma(a, b, c, destParallel, count, &config);
+      for( int i = 0; i < count; ++i )
+      {
+         if( !almostEqual(destSerial[i], destParallel[i]) )
+         {
+            TA_Free(a);
+            TA_Free(b);
+            TA_Free(c);
+            TA_Free(destSerial);
+            TA_Free(destParallel);
+            freeLib();
+            return TA_INTERNAL_PARALLEL_VEC_FMA_MISMATCH;
+         }
+      }
+
+      TA_Free(a);
+      TA_Free(b);
+      TA_Free(c);
+      TA_Free(destSerial);
+      TA_Free(destParallel);
+   }
+
+   retValue = freeLib();
+   if( retValue != TA_TEST_PASS )
+      return retValue;
+
+   return TA_TEST_PASS;
 }

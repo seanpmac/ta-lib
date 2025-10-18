@@ -43,6 +43,7 @@
 static const char TA_FunctionDescriptionXMLArray[] =
 {
 %%%GENCODE%%%
+ ,0x00
 };
 
 const char *TA_FunctionDescriptionXML()

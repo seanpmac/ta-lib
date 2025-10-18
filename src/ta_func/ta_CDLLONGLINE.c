@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -226,15 +227,59 @@ int outInteger[],
    ShadowPeriodTotal = 0;
    ShadowTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(ShadowShort);
 
-   i = BodyTrailingIdx;
-   while( i < startIdx ) {
-        BodyPeriodTotal += TA_CANDLERANGE( BodyLong, i );
-        i++;
+   const int bodyStartIdx = BodyTrailingIdx;
+   const int shadowStartIdx = ShadowTrailingIdx;
+   const int bodyCount = endIdx - BodyTrailingIdx + 1;
+   const int shadowCount = endIdx - ShadowTrailingIdx + 1;
+   double *bodyRange = NULL;
+   double *shadowRange = NULL;
+   int useVectorRanges = 0;
+
+   if( bodyCount > 0 && shadowCount > 0 )
+   {
+      bodyRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyCount);
+      shadowRange = (double *)TA_Malloc(sizeof(double) * (size_t)shadowCount);
+      if( bodyRange && shadowRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyLong],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyStartIdx, bodyCount,
+                              bodyRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_ShadowShort],
+                              inOpen, inHigh, inLow, inClose,
+                              shadowStartIdx, shadowCount,
+                              shadowRange);
+
+         for( i = bodyStartIdx; i < startIdx; ++i )
+            BodyPeriodTotal += bodyRange[i - bodyStartIdx];
+         for( i = shadowStartIdx; i < startIdx; ++i )
+            ShadowPeriodTotal += shadowRange[i - shadowStartIdx];
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyRange )
+            TA_Free(bodyRange);
+         if( shadowRange )
+            TA_Free(shadowRange);
+         bodyRange = NULL;
+         shadowRange = NULL;
+      }
    }
-   i = ShadowTrailingIdx;
-   while( i < startIdx ) {
-        ShadowPeriodTotal += TA_CANDLERANGE( ShadowShort, i );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyTrailingIdx;
+      while( i < startIdx ) {
+           BodyPeriodTotal += TA_CANDLERANGE( BodyLong, i );
+           i++;
+      }
+      i = ShadowTrailingIdx;
+      while( i < startIdx ) {
+           ShadowPeriodTotal += TA_CANDLERANGE( ShadowShort, i );
+           i++;
+      }
    }
 
    /* Proceed with the calculation for the requested range.
@@ -244,6 +289,7 @@ int outInteger[],
     * The meaning of "long" and "short" is specified with TA_SetCandleSettings
     * outInteger is positive (1 to 100) when white (bullish), negative (-1 to -100) when black (bearish)
     */
+   i = startIdx;
    outIdx = 0;
 
    do
@@ -257,8 +303,18 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyPeriodTotal += TA_CANDLERANGE( BodyLong, i ) - TA_CANDLERANGE( BodyLong, BodyTrailingIdx );
-        ShadowPeriodTotal += TA_CANDLERANGE( ShadowShort, i ) - TA_CANDLERANGE( ShadowShort, ShadowTrailingIdx );
+        if( useVectorRanges )
+        {
+            BodyPeriodTotal += bodyRange[i - bodyStartIdx]
+                             - bodyRange[BodyTrailingIdx - bodyStartIdx];
+            ShadowPeriodTotal += shadowRange[i - shadowStartIdx]
+                               - shadowRange[ShadowTrailingIdx - shadowStartIdx];
+        }
+        else
+        {
+            BodyPeriodTotal += TA_CANDLERANGE( BodyLong, i ) - TA_CANDLERANGE( BodyLong, BodyTrailingIdx );
+            ShadowPeriodTotal += TA_CANDLERANGE( ShadowShort, i ) - TA_CANDLERANGE( ShadowShort, ShadowTrailingIdx );
+        }
         i++;
         BodyTrailingIdx++;
         ShadowTrailingIdx++;
@@ -267,6 +323,12 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyRange);
+      TA_Free(shadowRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }

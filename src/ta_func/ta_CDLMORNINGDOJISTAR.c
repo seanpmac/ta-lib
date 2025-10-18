@@ -68,6 +68,7 @@
 /* Generated */    #include <string.h>
 /* Generated */    #include <math.h>
 /* Generated */    #include "ta_func.h"
+/* Generated */    #include "ta_candle_vec.h"
 /* Generated */ #endif
 /* Generated */ 
 /* Generated */ #ifndef TA_UTILITY_H
@@ -253,20 +254,77 @@ int outInteger[],
    BodyDojiTrailingIdx = startIdx -1 - TA_CANDLEAVGPERIOD(BodyDoji);
    BodyShortTrailingIdx = startIdx - TA_CANDLEAVGPERIOD(BodyShort);
 
-   i = BodyLongTrailingIdx;
-   while( i < startIdx-2 ) {
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
-        i++;
+   const int bodyLongStartIdx = BodyLongTrailingIdx;
+   const int bodyDojiStartIdx = BodyDojiTrailingIdx;
+   const int bodyShortStartIdx = BodyShortTrailingIdx;
+   const int bodyLongCount = endIdx - BodyLongTrailingIdx + 1;
+   const int bodyDojiCount = endIdx - BodyDojiTrailingIdx + 1;
+   const int bodyShortCount = endIdx - BodyShortTrailingIdx + 1;
+   double *bodyLongRange = NULL;
+   double *bodyDojiRange = NULL;
+   double *bodyShortRange = NULL;
+   int useVectorRanges = 0;
+
+   if( bodyLongCount > 0 && bodyDojiCount > 0 && bodyShortCount > 0 )
+   {
+      bodyLongRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyLongCount);
+      bodyDojiRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyDojiCount);
+      bodyShortRange = (double *)TA_Malloc(sizeof(double) * (size_t)bodyShortCount);
+      if( bodyLongRange && bodyDojiRange && bodyShortRange )
+      {
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyLong],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyLongStartIdx, bodyLongCount,
+                              bodyLongRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyDoji],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyDojiStartIdx, bodyDojiCount,
+                              bodyDojiRange);
+         TA_CandleRangeVector(&TA_Globals->candleSettings[TA_BodyShort],
+                              inOpen, inHigh, inLow, inClose,
+                              bodyShortStartIdx, bodyShortCount,
+                              bodyShortRange);
+
+         for( i = bodyLongStartIdx; i < startIdx-2; ++i )
+            BodyLongPeriodTotal += bodyLongRange[i - bodyLongStartIdx];
+         for( i = bodyDojiStartIdx; i < startIdx-1; ++i )
+            BodyDojiPeriodTotal += bodyDojiRange[i - bodyDojiStartIdx];
+         for( i = bodyShortStartIdx; i < startIdx; ++i )
+            BodyShortPeriodTotal += bodyShortRange[i - bodyShortStartIdx];
+
+         useVectorRanges = 1;
+      }
+      else
+      {
+         if( bodyLongRange )
+            TA_Free(bodyLongRange);
+         if( bodyDojiRange )
+            TA_Free(bodyDojiRange);
+         if( bodyShortRange )
+            TA_Free(bodyShortRange);
+         bodyLongRange = NULL;
+         bodyDojiRange = NULL;
+         bodyShortRange = NULL;
+      }
    }
-   i = BodyDojiTrailingIdx;
-   while( i < startIdx-1 ) {
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
-        i++;
-   }
-   i = BodyShortTrailingIdx;
-   while( i < startIdx ) {
-        BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i );
-        i++;
+
+   if( !useVectorRanges )
+   {
+      i = BodyLongTrailingIdx;
+      while( i < startIdx-2 ) {
+           BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i );
+           i++;
+      }
+      i = BodyDojiTrailingIdx;
+      while( i < startIdx-1 ) {
+           BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i );
+           i++;
+      }
+      i = BodyShortTrailingIdx;
+      while( i < startIdx ) {
+           BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i );
+           i++;
+      }
    }
    i = startIdx;
 
@@ -283,6 +341,7 @@ int outInteger[],
     * the user should consider that a morning star is significant when it appears in a downtrend,
     * while this function does not consider the trend
     */
+   i = startIdx;
    outIdx = 0;
    do
    {
@@ -300,9 +359,21 @@ int outInteger[],
         /* add the current range and subtract the first range: this is done after the pattern recognition
          * when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
          */
-        BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i-2 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
-        BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i-1 ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
-        BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i ) - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx );
+        if( useVectorRanges )
+        {
+            BodyLongPeriodTotal += bodyLongRange[(i-2) - bodyLongStartIdx]
+                                 - bodyLongRange[BodyLongTrailingIdx - bodyLongStartIdx];
+            BodyDojiPeriodTotal += bodyDojiRange[(i-1) - bodyDojiStartIdx]
+                                 - bodyDojiRange[BodyDojiTrailingIdx - bodyDojiStartIdx];
+            BodyShortPeriodTotal += bodyShortRange[i - bodyShortStartIdx]
+                                  - bodyShortRange[BodyShortTrailingIdx - bodyShortStartIdx];
+        }
+        else
+        {
+            BodyLongPeriodTotal += TA_CANDLERANGE( BodyLong, i-2 ) - TA_CANDLERANGE( BodyLong, BodyLongTrailingIdx );
+            BodyDojiPeriodTotal += TA_CANDLERANGE( BodyDoji, i-1 ) - TA_CANDLERANGE( BodyDoji, BodyDojiTrailingIdx );
+            BodyShortPeriodTotal += TA_CANDLERANGE( BodyShort, i ) - TA_CANDLERANGE( BodyShort, BodyShortTrailingIdx );
+        }
         i++;
         BodyLongTrailingIdx++;
         BodyDojiTrailingIdx++;
@@ -312,6 +383,13 @@ int outInteger[],
    /* All done. Indicate the output limits and return. */
    VALUE_HANDLE_DEREF(outNBElement) = outIdx;
    VALUE_HANDLE_DEREF(outBegIdx)    = startIdx;
+
+   if( useVectorRanges )
+   {
+      TA_Free(bodyLongRange);
+      TA_Free(bodyDojiRange);
+      TA_Free(bodyShortRange);
+   }
 
    return ENUM_VALUE(RetCode,TA_SUCCESS,Success);
 }
