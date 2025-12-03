@@ -81,6 +81,8 @@ Session.vim
 .vs/
 out/
 *.vcxproj.user
+**/bin/
+**/obj/
 
 ## MSVC Windows builds (debug info)
 *.pdb
